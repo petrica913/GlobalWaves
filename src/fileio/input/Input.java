@@ -3,31 +3,22 @@ package fileio.input;
 import java.util.ArrayList;
 
 public final class Input {
+    @lombok.Getter
     private LibraryInput library;
+    @lombok.Getter
     private ArrayList<UserInput> users;
+    @lombok.Getter
     private ArrayList<CommandInput> commands;
 
     public Input() {
-    }
-
-    public LibraryInput getLibrary() {
-        return library;
     }
 
     public void setLibrary(final LibraryInput library) {
         this.library = library;
     }
 
-    public ArrayList<UserInput> getUsers() {
-        return users;
-    }
-
     public void setUsers(final ArrayList<UserInput> users) {
         this.users = users;
-    }
-
-    public ArrayList<CommandInput> getCommands() {
-        return commands;
     }
 
     public void setCommands(final ArrayList<CommandInput> commands) {

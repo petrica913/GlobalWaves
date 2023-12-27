@@ -4,9 +4,6 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 
-/**
- * The type Library entry.
- */
 @Getter
 public abstract class LibraryEntry {
     private final String name;
@@ -21,110 +18,88 @@ public abstract class LibraryEntry {
     }
 
     /**
-     * Matches name boolean.
-     *
-     * @param nameFilter the name
-     * @return the boolean
+     * @param name for verifying if the names match
+     * @return
      */
-    public boolean matchesName(final String nameFilter) {
-        return getName().toLowerCase().startsWith(nameFilter.toLowerCase());
+
+    public boolean matchesName(final String name) {
+        return getName().toLowerCase().startsWith(name.toLowerCase());
     }
 
     /**
-     * Matches album boolean.
-     *
-     * @param album the album
-     * @return the boolean
+     * @param album for verifying if the albums match
+     * @return
      */
     public boolean matchesAlbum(final String album) {
         return false;
     }
 
     /**
-     * Matches tags boolean.
-     *
-     * @param tags the tags
-     * @return the boolean
+     * @param tags for verifying if the tags match
+     * @return
      */
     public boolean matchesTags(final ArrayList<String> tags) {
         return false;
     }
 
     /**
-     * Matches lyrics boolean.
-     *
-     * @param lyrics the lyrics
-     * @return the boolean
+     * @param lyrics for verifying if the lyrics match
+     * @return
      */
     public boolean matchesLyrics(final String lyrics) {
         return false;
     }
 
     /**
-     * Matches genre boolean.
      *
-     * @param genre the genre
-     * @return the boolean
+     * @param genre for verifying if the genres match
+     * @return
      */
     public boolean matchesGenre(final String genre) {
         return false;
     }
 
     /**
-     * Matches artist boolean.
      *
-     * @param artist the artist
-     * @return the boolean
+     * @param artist for verifying if the artists match
+     * @return
      */
     public boolean matchesArtist(final String artist) {
         return false;
     }
 
     /**
-     * Matches release year boolean.
      *
-     * @param releaseYear the release year
-     * @return the boolean
+     * @param releaseYear for verifying if the years of
+     *                   release match
+     * @return
      */
     public boolean matchesReleaseYear(final String releaseYear) {
         return false;
     }
 
     /**
-     * Matches owner boolean.
      *
-     * @param user the user
-     * @return the boolean
+     * @param user for verifying if the owner matches with the user
+     * @return
      */
     public boolean matchesOwner(final String user) {
         return false;
     }
 
     /**
-     * Matches description boolean.
      *
-     * @param description the description
-     * @return the boolean
-     */
-    public boolean matchesDescription(final String description) {
-        return false;
-    }
-
-    /**
-     * Is visible to user boolean.
-     *
-     * @param user the user
-     * @return the boolean
+     * @param user for verifying if the library entry is visible to the user
+     * @return
      */
     public boolean isVisibleToUser(final String user) {
         return false;
     }
 
     /**
-     * Matches followers boolean.
      *
-     * @param followers the followers
-     * @return the boolean
+     * @param followers for verifying if the followers match
+     * @return
      */
     public boolean matchesFollowers(final String followers) {
         return false;

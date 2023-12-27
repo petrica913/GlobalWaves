@@ -3,31 +3,22 @@ package fileio.input;
 import java.util.ArrayList;
 
 public final class PodcastInput {
+    @lombok.Getter
     private String name;
+    @lombok.Getter
     private String owner;
+    @lombok.Getter
     private ArrayList<EpisodeInput> episodes;
 
     public PodcastInput() {
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(final String name) {
         this.name = name;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
     public void setOwner(final String owner) {
         this.owner = owner;
-    }
-
-    public ArrayList<EpisodeInput> getEpisodes() {
-        return episodes;
     }
 
     public void setEpisodes(final ArrayList<EpisodeInput> episodes) {

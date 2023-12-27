@@ -16,7 +16,6 @@ public class Filters {
     private String artist;
     private String owner;
     private String followers;
-    private String description;
 
     public Filters(final FiltersInput filters) {
         this.name = filters.getName();
@@ -28,6 +27,5 @@ public class Filters {
         this.artist = filters.getArtist();
         this.owner = filters.getOwner();
         this.followers = filters.getFollowers();
-        this.description = filters.getDescription();
     }
 }

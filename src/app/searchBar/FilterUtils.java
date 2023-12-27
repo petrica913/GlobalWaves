@@ -5,20 +5,14 @@ import app.audio.LibraryEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The type Filter utils.
- */
 public final class FilterUtils {
-
     private FilterUtils() {
     }
-
     /**
-     * Filter by name list.
-     *
-     * @param entries the entries
-     * @param name    the name
-     * @return the list
+     * Filters by the name
+     * @param entries for entries
+     * @param name for name
+     * @return the result
      */
     public static List<LibraryEntry> filterByName(final List<LibraryEntry> entries,
                                                   final String name) {
@@ -32,11 +26,10 @@ public final class FilterUtils {
     }
 
     /**
-     * Filter by album list.
-     *
-     * @param entries the entries
-     * @param album   the album
-     * @return the list
+     * Filters by album
+     * @param entries for entries
+     * @param album for albu,
+     * @return the result
      */
     public static List<LibraryEntry> filterByAlbum(final List<LibraryEntry> entries,
                                                    final String album) {
@@ -44,11 +37,10 @@ public final class FilterUtils {
     }
 
     /**
-     * Filter by tags list.
-     *
-     * @param entries the entries
-     * @param tags    the tags
-     * @return the list
+     * Filters by tags
+     * @param entries for entries
+     * @param tags for tags
+     * @return the result
      */
     public static List<LibraryEntry> filterByTags(final List<LibraryEntry> entries,
                                                   final ArrayList<String> tags) {
@@ -56,11 +48,10 @@ public final class FilterUtils {
     }
 
     /**
-     * Filter by lyrics list.
-     *
-     * @param entries the entries
-     * @param lyrics  the lyrics
-     * @return the list
+     * Filters by lyrics
+     * @param entries for entries
+     * @param lyrics for lyrics
+     * @return the result
      */
     public static List<LibraryEntry> filterByLyrics(final List<LibraryEntry> entries,
                                                     final String lyrics) {
@@ -68,11 +59,10 @@ public final class FilterUtils {
     }
 
     /**
-     * Filter by genre list.
-     *
-     * @param entries the entries
-     * @param genre   the genre
-     * @return the list
+     * Filters by genre
+     * @param entries for entries
+     * @param genre for the genre
+     * @return the result
      */
     public static List<LibraryEntry> filterByGenre(final List<LibraryEntry> entries,
                                                    final String genre) {
@@ -80,11 +70,10 @@ public final class FilterUtils {
     }
 
     /**
-     * Filter by artist list.
-     *
-     * @param entries the entries
-     * @param artist  the artist
-     * @return the list
+     * Filters by artist
+     * @param entries for entries
+     * @param artist for artist
+     * @return the result
      */
     public static List<LibraryEntry> filterByArtist(final List<LibraryEntry> entries,
                                                     final String artist) {
@@ -92,11 +81,10 @@ public final class FilterUtils {
     }
 
     /**
-     * Filter by release year list.
-     *
-     * @param entries     the entries
-     * @param releaseYear the release year
-     * @return the list
+     * Filters by release year
+     * @param entries for entries
+     * @param releaseYear for year
+     * @return the result
      */
     public static List<LibraryEntry> filterByReleaseYear(final List<LibraryEntry> entries,
                                                          final String releaseYear) {
@@ -104,11 +92,10 @@ public final class FilterUtils {
     }
 
     /**
-     * Filter by owner list.
-     *
-     * @param entries the entries
-     * @param user    the user
-     * @return the list
+     * Filters by owner
+     * @param entries for entries
+     * @param user for user
+     * @return the result
      */
     public static List<LibraryEntry> filterByOwner(final List<LibraryEntry> entries,
                                                    final String user) {
@@ -116,23 +103,10 @@ public final class FilterUtils {
     }
 
     /**
-     * Filter by description list.
-     *
-     * @param entries     the entries
-     * @param description the description
-     * @return the list
-     */
-    public static List<LibraryEntry> filterByDescription(final List<LibraryEntry> entries,
-                                                         final String description) {
-        return filter(entries, entry -> entry.matchesDescription(description));
-    }
-
-    /**
-     * Filter by playlist visibility list.
-     *
-     * @param entries the entries
-     * @param user    the user
-     * @return the list
+     * Filters by visibility
+     * @param entries for entries
+     * @param user for user
+     * @return the result
      */
     public static List<LibraryEntry> filterByPlaylistVisibility(final List<LibraryEntry> entries,
                                                                 final String user) {
@@ -140,17 +114,22 @@ public final class FilterUtils {
     }
 
     /**
-     * Filter by followers list.
-     *
-     * @param entries   the entries
-     * @param followers the followers
-     * @return the list
+     * Filters by followers
+     * @param entries for entries
+     * @param followers for followers
+     * @return the result
      */
     public static List<LibraryEntry> filterByFollowers(final List<LibraryEntry> entries,
                                                        final String followers) {
         return filter(entries, entry -> entry.matchesFollowers(followers));
     }
 
+    /**
+     * For the filter method
+     * @param entries for entries
+     * @param criteria for criteria
+     * @return the result
+     */
     private static List<LibraryEntry> filter(final List<LibraryEntry> entries,
                                              final FilterCriteria criteria) {
         List<LibraryEntry> result = new ArrayList<>();
@@ -164,12 +143,6 @@ public final class FilterUtils {
 
     @FunctionalInterface
     private interface FilterCriteria {
-        /**
-         * Matches boolean.
-         *
-         * @param entry the entry
-         * @return the boolean
-         */
         boolean matches(LibraryEntry entry);
     }
 }

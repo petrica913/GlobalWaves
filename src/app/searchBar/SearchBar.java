@@ -3,7 +3,10 @@ package app.searchBar;
 
 import app.Admin;
 import app.audio.LibraryEntry;
-import app.user.ContentCreator;
+import app.audio.UserEntry;
+import app.user.Artist;
+import app.user.Host;
+import app.user.User;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -11,7 +14,6 @@ import java.util.List;
 
 import static app.searchBar.FilterUtils.filterByAlbum;
 import static app.searchBar.FilterUtils.filterByArtist;
-import static app.searchBar.FilterUtils.filterByDescription;
 import static app.searchBar.FilterUtils.filterByFollowers;
 import static app.searchBar.FilterUtils.filterByGenre;
 import static app.searchBar.FilterUtils.filterByLyrics;
@@ -21,44 +23,23 @@ import static app.searchBar.FilterUtils.filterByPlaylistVisibility;
 import static app.searchBar.FilterUtils.filterByReleaseYear;
 import static app.searchBar.FilterUtils.filterByTags;
 
-
-/**
- * The type Search bar.
- */
-public final class SearchBar {
-    private static Admin admin;
+public class SearchBar {
     private List<LibraryEntry> results;
     private final String user;
     private static final Integer MAX_RESULTS = 5;
     @Getter
     private String lastSearchType;
+
     @Getter
     private LibraryEntry lastSelected;
-    @Getter
-    private List<ContentCreator> resultsContentCreator;
-    @Getter
-    private ContentCreator lastContentCreatorSelected;
 
-    /**
-     * Update admin.
-     */
-    public static void updateAdmin() {
-        admin = Admin.getInstance();
-    }
-
-    /**
-     * Instantiates a new Search bar.
-     *
-     * @param user the user
-     */
     public SearchBar(final String user) {
         this.results = new ArrayList<>();
-        this.resultsContentCreator = new ArrayList<>();
         this.user = user;
     }
 
     /**
-     * Clear selection.
+     * Clears the selection made
      */
     public void clearSelection() {
         lastSelected = null;
@@ -66,18 +47,17 @@ public final class SearchBar {
     }
 
     /**
-     * Search list.
-     *
-     * @param filters the filters
-     * @param type    the type
-     * @return the list
+     * Searches for the given object
+     * @param filters for filters
+     * @param type for type
+     * @return the results
      */
     public List<LibraryEntry> search(final Filters filters, final String type) {
         List<LibraryEntry> entries;
 
         switch (type) {
             case "song":
-                entries = new ArrayList<>(admin.getSongs());
+                entries = new ArrayList<>(Admin.getInstance().getSongs());
 
                 if (filters.getName() != null) {
                     entries = filterByName(entries, filters.getName());
@@ -109,7 +89,7 @@ public final class SearchBar {
 
                 break;
             case "playlist":
-                entries = new ArrayList<>(admin.getPlaylists());
+                entries = new ArrayList<>(Admin.getInstance().getPlaylists());
 
                 entries = filterByPlaylistVisibility(entries, user);
 
@@ -127,7 +107,7 @@ public final class SearchBar {
 
                 break;
             case "podcast":
-                entries = new ArrayList<>(admin.getPodcasts());
+                entries = new ArrayList<>(Admin.getInstance().getPodcasts());
 
                 if (filters.getName() != null) {
                     entries = filterByName(entries, filters.getName());
@@ -139,8 +119,7 @@ public final class SearchBar {
 
                 break;
             case "album":
-                entries = new ArrayList<>(admin.getAlbums());
-
+                entries = new ArrayList<>(Admin.getAlbums());
                 if (filters.getName() != null) {
                     entries = filterByName(entries, filters.getName());
                 }
@@ -148,11 +127,39 @@ public final class SearchBar {
                 if (filters.getOwner() != null) {
                     entries = filterByOwner(entries, filters.getOwner());
                 }
-
-                if (filters.getDescription() != null) {
-                    entries = filterByDescription(entries, filters.getDescription());
+                break;
+            case "artist":
+                entries = new ArrayList<>();
+                UserEntry newInstance;
+                for (User user1 : Admin.getInstance().getUsers()) {
+                    if (user1.getType() == null)
+                        user1.setType("user");
+                    if (user1.getType().equals("artist")) {
+                        newInstance = new UserEntry(user1.getUsername());
+                        entries.add(newInstance);
+                    }
                 }
 
+                if (filters.getName() != null) {
+                    entries = filterByName(entries, filters.getName());
+                }
+                break;
+            case "host":
+                entries = new ArrayList<>();
+                UserEntry newInstance2;
+                for (User user1 : Admin.getInstance().getUsers()) {
+                    if (user1.getType() == null) {
+                        user1.setType("user");
+                    }
+                    if (user1.getType().equals("host")) {
+                        newInstance2 = new UserEntry(user1.getUsername());
+                        entries.add(newInstance2);
+                    }
+                }
+
+                if (filters.getName() != null) {
+                    entries = filterByName(entries, filters.getName());
+                }
                 break;
             default:
                 entries = new ArrayList<>();
@@ -163,63 +170,14 @@ public final class SearchBar {
         }
 
         this.results = entries;
-        this.resultsContentCreator.clear();
         this.lastSearchType = type;
         return this.results;
     }
 
     /**
-     * Search content creator list.
-     *
-     * @param filters the filters
-     * @param type    the type
-     * @return the list
-     */
-    public List<ContentCreator> searchContentCreator(final Filters filters, final String type) {
-        List<ContentCreator> entries;
-
-        switch (type) {
-            case "artist":
-                entries = new ArrayList<>(admin.getArtists());
-
-                if (filters.getName() != null) {
-                    entries.removeIf(contentCreator
-                                        -> !contentCreator.getUsername().toLowerCase()
-                                                          .startsWith(filters.getName()
-                                                          .toLowerCase()));
-                }
-
-                break;
-            case "host":
-                entries = new ArrayList<>(admin.getHosts());
-
-                if (filters.getName() != null) {
-                    entries.removeIf(contentCreator
-                                        -> !contentCreator.getUsername().toLowerCase()
-                                                          .startsWith(filters.getName()
-                                                          .toLowerCase()));
-                }
-
-                break;
-            default:
-                entries = new ArrayList<>();
-        }
-
-        while (entries.size() > MAX_RESULTS) {
-            entries.remove(entries.size() - 1);
-        }
-
-        this.resultsContentCreator = entries;
-        this.results.clear();
-        this.lastSearchType = type;
-        return this.resultsContentCreator;
-    }
-
-    /**
-     * Select library entry.
-     *
-     * @param itemNumber the item number
-     * @return the library entry
+     * Selects a searched object
+     * @param itemNumber for the number of the item
+     * @return the object selected
      */
     public LibraryEntry select(final Integer itemNumber) {
         if (this.results.size() < itemNumber) {
@@ -231,25 +189,6 @@ public final class SearchBar {
             results.clear();
 
             return lastSelected;
-        }
-    }
-
-    /**
-     * Select content creator content creator.
-     *
-     * @param itemNumber the item number
-     * @return the content creator
-     */
-    public ContentCreator selectContentCreator(final Integer itemNumber) {
-        if (this.resultsContentCreator.size() < itemNumber) {
-            resultsContentCreator.clear();
-
-            return null;
-        } else {
-            lastContentCreatorSelected = this.resultsContentCreator.get(itemNumber - 1);
-            resultsContentCreator.clear();
-
-            return lastContentCreatorSelected;
         }
     }
 }

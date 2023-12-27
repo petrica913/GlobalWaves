@@ -4,53 +4,37 @@ import app.audio.Files.AudioFile;
 import app.audio.LibraryEntry;
 import lombok.Getter;
 
-/**
- * The type Audio collection.
- */
 @Getter
 public abstract class AudioCollection extends LibraryEntry {
     private final String owner;
+    private final String type;
 
-    /**
-     * Instantiates a new Audio collection.
-     *
-     * @param name  the name
-     * @param owner the owner
-     */
-    public AudioCollection(final String name, final String owner) {
+    public AudioCollection(final String name, final String owner, String type) {
         super(name);
         this.owner = owner;
+        this.type = type;
     }
 
     /**
-     * Gets number of tracks.
-     *
-     * @return the number of tracks
+     * Returns the number of tracks from a given audio collection
+     * @return number of tracks
      */
     public abstract int getNumberOfTracks();
 
     /**
-     * Gets track by index.
-     *
-     * @param index the index
-     * @return the track by index
+     * Returns a track with a given index
+     * @param index for index
+     * @return the track with the given index
      */
     public abstract AudioFile getTrackByIndex(int index);
 
     /**
-     *
-     * @param user the user
-     * @return if the user is the owner
+     * Verifies the match between owner and user
+     * @param user for verifying if the owner matches with the user
+     * @return
      */
+    @Override
     public boolean matchesOwner(final String user) {
         return this.getOwner().equals(user);
     }
-
-    /**
-     * Contains track boolean.
-     *
-     * @param track the track
-     * @return the boolean
-     */
-    public abstract boolean containsTrack(AudioFile track);
 }

@@ -6,36 +6,23 @@ import app.utils.Enums;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * The type Playlist.
- */
 @Getter
 public final class Playlist extends AudioCollection {
     private final ArrayList<Song> songs;
     private Enums.Visibility visibility;
     private Integer followers;
     private int timestamp;
+    @Getter
+    private int seed;
 
-    /**
-     * Instantiates a new Playlist.
-     *
-     * @param name  the name
-     * @param owner the owner
-     */
     public Playlist(final String name, final String owner) {
         this(name, owner, 0);
     }
 
-    /**
-     * Instantiates a new Playlist.
-     *
-     * @param name      the name
-     * @param owner     the owner
-     * @param timestamp the timestamp
-     */
     public Playlist(final String name, final String owner, final int timestamp) {
-        super(name, owner);
+        super(name, owner, "playlist");
         this.songs = new ArrayList<>();
         this.visibility = Enums.Visibility.PUBLIC;
         this.followers = 0;
@@ -43,44 +30,36 @@ public final class Playlist extends AudioCollection {
     }
 
     /**
-     * Contains song boolean.
-     *
-     * @param song the song
-     * @return the boolean
+     * @param song for verifying if a playlist contains a given song
+     * @return a boolean value
      */
     public boolean containsSong(final Song song) {
         return songs.contains(song);
     }
 
     /**
-     * Add song.
-     *
-     * @param song the song
+     * @param song for adding a new song
      */
     public void addSong(final Song song) {
         songs.add(song);
     }
 
     /**
-     * Remove song.
-     *
-     * @param song the song
+     * @param song for removing a given song
      */
     public void removeSong(final Song song) {
         songs.remove(song);
     }
 
     /**
-     * Remove song.
-     *
-     * @param index the index
+     * @param index for removing a song with a given index
      */
     public void removeSong(final int index) {
         songs.remove(index);
     }
 
     /**
-     * Switch visibility.
+     * switch the visibility of a playlist
      */
     public void switchVisibility() {
         if (visibility == Enums.Visibility.PUBLIC) {
@@ -91,14 +70,14 @@ public final class Playlist extends AudioCollection {
     }
 
     /**
-     * Increase followers.
+     * increases the number of followers of a playlist
      */
     public void increaseFollowers() {
         followers++;
     }
 
     /**
-     * Decrease followers.
+     * decreases the number of followers of a playlist
      */
     public void decreaseFollowers() {
         followers--;
@@ -117,8 +96,8 @@ public final class Playlist extends AudioCollection {
     @Override
     public boolean isVisibleToUser(final String user) {
         return this.getVisibility() == Enums.Visibility.PUBLIC
-               || (this.getVisibility() == Enums.Visibility.PRIVATE
-                   && this.getOwner().equals(user));
+                || (this.getVisibility() == Enums.Visibility.PRIVATE
+                        && this.getOwner().equals(user));
     }
 
     @Override
@@ -126,6 +105,12 @@ public final class Playlist extends AudioCollection {
         return filterByFollowersCount(this.getFollowers(), followerNum);
     }
 
+    /**
+     * Filters a plylist by the number of the followers
+     * @param count for counting
+     * @param query for query
+     * @return
+     */
     private static boolean filterByFollowersCount(final int count, final String query) {
         if (query.startsWith("<")) {
             return count < Integer.parseInt(query.substring(1));
@@ -136,8 +121,28 @@ public final class Playlist extends AudioCollection {
         }
     }
 
-    @Override
-    public boolean containsTrack(final AudioFile track) {
-        return songs.contains(track);
+    /**
+     * For returning the number of likes of a playlist
+     * @return total likes
+     */
+    public int getTotalLikes() {
+        int totalLikes = 0;
+        for (Song song : this.songs) {
+            totalLikes += song.getLikes();
+        }
+        return totalLikes;
     }
+
+    public void setSeed(final int seed) {
+        this.seed = seed;
+    }
+
+    /**
+     * Removes a list of given songs from the playlist's songs
+     * @param songsToRemove for the list of songs to be removed
+     */
+    public void removeSongs(final List<Song> songsToRemove) {
+        songs.removeAll(songsToRemove);
+    }
+
 }

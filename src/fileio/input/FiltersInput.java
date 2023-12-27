@@ -1,91 +1,60 @@
 package fileio.input;
 
-import lombok.Getter;
-
 import java.util.ArrayList;
 
 public final class FiltersInput {
+    @lombok.Getter
     private String name;
+    @lombok.Getter
     private String album;
+    @lombok.Getter
     private ArrayList<String> tags;
+    @lombok.Getter
     private String lyrics;
+    @lombok.Getter
     private String genre;
+    @lombok.Getter
     private String releaseYear; // pentru search song/episode -> releaseYear
+    @lombok.Getter
     private String artist;
+    @lombok.Getter
     private String owner; // pentru search playlist si podcast
+    @lombok.Getter
     private String followers; // pentru search playlist -> followers
-    @Getter
-    private String description; // pentru search album -> followers
 
     public FiltersInput() {
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(final String name) {
         this.name = name;
     }
 
-    public String getAlbum() {
-        return album;
-    }
-
     public void setAlbum(final String album) {
         this.album = album;
-    }
-
-    public ArrayList<String> getTags() {
-        return tags;
     }
 
     public void setTags(final ArrayList<String> tags) {
         this.tags = tags;
     }
 
-    public String getLyrics() {
-        return lyrics;
-    }
-
     public void setLyrics(final String lyrics) {
         this.lyrics = lyrics;
-    }
-
-    public String getGenre() {
-        return genre;
     }
 
     public void setGenre(final String genre) {
         this.genre = genre;
     }
 
-    public String getReleaseYear() {
-        return releaseYear;
-    }
-
     public void setReleaseYear(final String releaseYear) {
         this.releaseYear = releaseYear;
-    }
-
-    public String getArtist() {
-        return artist;
     }
 
     public void setArtist(final String artist) {
         this.artist = artist;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
     public void setOwner(final String owner) {
         this.owner = owner;
-    }
-
-    public String getFollowers() {
-        return followers;
     }
 
     public void setFollowers(final String followers) {

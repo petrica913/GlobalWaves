@@ -5,9 +5,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The type Song.
- */
 @Getter
 public final class Song extends AudioFile {
     private final String album;
@@ -18,22 +15,21 @@ public final class Song extends AudioFile {
     private final String artist;
     private Integer likes;
 
-    /**
-     * Instantiates a new Song.
-     *
-     * @param name        the name
-     * @param duration    the duration
-     * @param album       the album
-     * @param tags        the tags
-     * @param lyrics      the lyrics
-     * @param genre       the genre
-     * @param releaseYear the release year
-     * @param artist      the artist
-     */
+    public Song() {
+        super("", 0, "song"); // Call to the superclass default constructor
+        this.album = "";
+        this.tags = new ArrayList<>();
+        this.lyrics = "";
+        this.genre = "";
+        this.releaseYear = 0;
+        this.artist = "";
+        this.likes = 0;
+    }
+
     public Song(final String name, final Integer duration, final String album,
                 final ArrayList<String> tags, final String lyrics, final String genre,
                 final Integer releaseYear, final String artist) {
-        super(name, duration);
+        super(name, duration, "song");
         this.album = album;
         this.tags = tags;
         this.lyrics = lyrics;
@@ -43,45 +39,82 @@ public final class Song extends AudioFile {
         this.likes = 0;
     }
 
+    /**
+     * Verifies the match between albums
+     * @param albumNum for verifying if the albums match
+     * @return
+     */
     @Override
-    public boolean matchesAlbum(final String albumName) {
-        return this.getAlbum().equalsIgnoreCase(albumName);
+    public boolean matchesAlbum(final String albumNum) {
+        return this.getAlbum().equalsIgnoreCase(albumNum);
     }
 
+    /**
+     * Verifies the match between tags
+     * @param tagsNum for verifying if the tags match
+     * @return
+     */
     @Override
-    public boolean matchesTags(final ArrayList<String> tagsList) {
+    public boolean matchesTags(final ArrayList<String> tagsNum) {
         List<String> songTags = new ArrayList<>();
         for (String tag : this.getTags()) {
             songTags.add(tag.toLowerCase());
         }
 
-        for (String tag : tagsList) {
+        for (String tag : tagsNum) {
             if (!songTags.contains(tag.toLowerCase())) {
                 return false;
             }
         }
         return true;
     }
+
+    /**
+     * Verifies the match between lyrics
+     * @param lyricsNum for verifying if the lyrics match
+     * @return
+     */
     @Override
-    public boolean matchesLyrics(final String lyricFilter) {
-        return this.getLyrics().toLowerCase().contains(lyricFilter.toLowerCase());
+    public boolean matchesLyrics(final String lyricsNum) {
+        return this.getLyrics().toLowerCase().contains(lyricsNum.toLowerCase());
     }
 
+    /**
+     * Verifies the match between the genres
+     * @param genreNum for verifying if the genres match
+     * @return
+     */
     @Override
-    public boolean matchesGenre(final String genreFilter) {
-        return this.getGenre().equalsIgnoreCase(genreFilter);
+    public boolean matchesGenre(final String genreNum) {
+        return this.getGenre().equalsIgnoreCase(genreNum);
     }
 
+    /**
+     * Verifies the match between artists
+     * @param artistNum for verifying if the artists match
+     * @return
+     */
     @Override
-    public boolean matchesArtist(final String artistFilter) {
-        return this.getArtist().equalsIgnoreCase(artistFilter);
+    public boolean matchesArtist(final String artistNum) {
+        return this.getArtist().equalsIgnoreCase(artistNum);
     }
 
+    /**
+     * @param releaseYearNum for verifying if the years of
+     *                   release match
+     * @return
+     */
     @Override
-    public boolean matchesReleaseYear(final String releaseYearFilter) {
-        return filterByYear(this.getReleaseYear(), releaseYearFilter);
+    public boolean matchesReleaseYear(final String releaseYearNum) {
+        return filterByYear(this.getReleaseYear(), releaseYearNum);
     }
 
+    /**
+     * Verifies if the songs are filtered by year
+     * @param year for year
+     * @param query for query
+     * @return a boolean
+     */
     private static boolean filterByYear(final int year, final String query) {
         if (query.startsWith("<")) {
             return year < Integer.parseInt(query.substring(1));
@@ -93,14 +126,14 @@ public final class Song extends AudioFile {
     }
 
     /**
-     * Like.
+     * For giving a like to a song
      */
     public void like() {
         likes++;
     }
 
     /**
-     * Dislike.
+     * For disliking a song
      */
     public void dislike() {
         likes--;

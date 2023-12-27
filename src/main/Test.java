@@ -16,7 +16,6 @@ public final class Test {
      */
     private Test() {
     }
-
     /**
      * @param args input files
      * @throws IOException in case of exceptions to reading / writing
@@ -32,7 +31,7 @@ public final class Test {
             String fileName = scanner.next();
             for (File file : inputDir) {
                 if (file.getName().equalsIgnoreCase(fileName)) {
-                    Main.action(file.getAbsolutePath(), CheckerConstants.OUT_FILE);
+                    Main.action(fileName, CheckerConstants.OUT_FILE);
                     break;
                 }
             }

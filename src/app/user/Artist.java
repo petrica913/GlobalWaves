@@ -1,128 +1,171 @@
 package app.user;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import app.Admin;
 import app.audio.Collections.Album;
 import app.audio.Collections.AlbumOutput;
+import app.audio.Collections.AudioCollection;
+import app.audio.Collections.Playlist;
+import app.audio.Files.AudioFile;
 import app.audio.Files.Song;
-import app.pages.ArtistPage;
+import app.user.Collections.Event;
+import app.user.Collections.Merch;
 
-/**
- * The type Artist.
- */
-public final class Artist extends ContentCreator {
+import lombok.Getter;
+
+public class Artist extends User {
+    @Getter
     private ArrayList<Album> albums;
-    private ArrayList<Merchandise> merch;
+    @Getter
     private ArrayList<Event> events;
+    @Getter
+    private ArrayList<Merch>  merches;
+    @Getter
+    private Integer likes;
 
-    /**
-     * Instantiates a new Artist.
-     *
-     * @param username the username
-     * @param age      the age
-     * @param city     the city
-     */
     public Artist(final String username, final int age, final String city) {
         super(username, age, city);
         albums = new ArrayList<>();
-        merch = new ArrayList<>();
         events = new ArrayList<>();
-
-        super.setPage(new ArtistPage(this));
+        merches = new ArrayList<>();
+        likes = 0;
     }
 
     /**
-     * Gets albums.
-     *
-     * @return the albums
+     * Adds an album
+     * @param album for album
+     * @return the message of the result
      */
-    public ArrayList<Album> getAlbums() {
-        return albums;
+    public String addAlbum(final Album album) {
+        albums.add(album);
+        Admin.getInstance().addSongs(album.getSongs());
+        return getUsername() + " has added new album successfully.";
     }
 
     /**
-     * Gets merch.
-     *
-     * @return the merch
-     */
-    public ArrayList<Merchandise> getMerch() {
-        return merch;
-    }
-
-    /**
-     * Gets events.
-     *
-     * @return the events
-     */
-    public ArrayList<Event> getEvents() {
-        return events;
-    }
-
-    /**
-     * Gets event.
-     *
-     * @param eventName the event name
-     * @return the event
-     */
-    public Event getEvent(final String eventName) {
-        for (Event event : events) {
-            if (event.getName().equals(eventName)) {
-                return event;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets album.
-     *
-     * @param albumName the album name
-     * @return the album
-     */
-    public Album getAlbum(final String albumName) {
-        for (Album album : albums) {
-            if (album.getName().equals(albumName)) {
-                return album;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets all songs.
-     *
-     * @return the all songs
-     */
-    public List<Song> getAllSongs() {
-        List<Song> songs = new ArrayList<>();
-        albums.forEach(album -> songs.addAll(album.getSongs()));
-
-        return songs;
-    }
-
-    /**
-     * Show albums array list.
-     *
-     * @return the array list
+     * Shows the albums of an artist
+     * @return the message
      */
     public ArrayList<AlbumOutput> showAlbums() {
-        ArrayList<AlbumOutput> albumOutput = new ArrayList<>();
+        ArrayList<AlbumOutput> result = new ArrayList<>();
         for (Album album : albums) {
-            albumOutput.add(new AlbumOutput(album));
+            result.add(new AlbumOutput(album));
         }
-
-        return albumOutput;
+        return result;
     }
 
     /**
-     * Get user type
-     *
-     * @return user type string
+     * Adds an event
+     * @param event for event
+     * @return the message
      */
-    public String userType() {
-        return "artist";
+    public String addEvent(final Event event) {
+        events.add(event);
+        return getUsername() + " has added new event successfully.";
+    }
+
+    /**
+     * Removes an event
+     * @param eventName for the name of the event
+     * @return the message
+     */
+    public String removeEvent(final String eventName) {
+        Event eventToRemove = null;
+        for (Event event : events) {
+            if (event.getName().equals(eventName)) {
+                eventToRemove = event;
+            }
+        }
+        if (eventToRemove == null) {
+            return getUsername() + " doesn't have an event with the given name.";
+        }
+        events.remove(eventToRemove);
+        return getUsername() + " deleted the event successfully.";
+    }
+
+    /**
+     * Adds merch for an artist
+     * @param merch for merch
+     * @return the result
+     */
+    public String addMerch(final Merch merch) {
+        merches.add(merch);
+        return getUsername() + " has added new merchandise successfully.";
+    }
+
+    /**
+     * Removes an album
+     * @param albumName for the name of the album
+     * @return the result
+     */
+    public String removeAlbum(final String albumName) {
+        Album albumToRemove = null;
+        for (Album album : albums) {
+            if (album.getName().equals(albumName)) {
+                albumToRemove = album;
+                break;
+            }
+        }
+        if (albumToRemove == null) {
+            return getUsername() + " doesn't have an album with the given name.";
+        }
+        boolean variable = canAlbumBeDeleted(albumToRemove);
+        if (!variable) {
+            return getUsername() + " can't delete this album.";
+        }
+        for (User user : Admin.getInstance().getUsers()) {
+            for (Playlist playlist : user.getPlaylists()) {
+                Integer size = playlist.getSongs().size();
+                playlist.removeSongs(albumToRemove.getSongs());
+            }
+            ArrayList<Song> likedSongs = user.getLikedSongs();
+            likedSongs.removeAll(albumToRemove.getSongs());
+            user.setLikedSongs(likedSongs);
+        }
+        albums.remove(albumToRemove);
+        return getUsername() + " deleted the album successfully.";
+    }
+
+    /**
+     * Verifies if an album can be removed
+     * @param albumToRemove the album to be removed
+     * @return a boolean
+     */
+    private boolean canAlbumBeDeleted(final Album albumToRemove) {
+        for (User user : Admin.getInstance().getUsers()) {
+            AudioFile audioFile = user.getPlayer().getCurrentAudioFile();
+            Song song = null;
+            if (audioFile != null) {
+                if (audioFile.getType().equals("song")) {
+                    song = (Song) audioFile;
+                }
+            }
+            if (audioFile == null || song == null) {
+                continue;
+            } else if (song.getAlbum().equals(albumToRemove.getName())) {
+                return false;
+            }
+            AudioCollection audioCollection = user.getPlayer().getSource().getAudioCollection();
+            if (audioCollection != null) {
+                if (audioCollection.getType().equals("playlist")) {
+                    Playlist playlist = (Playlist) audioCollection;
+                    for (Song song1 : playlist.getSongs()) {
+                        if (albumToRemove.getSongs().contains(song1)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Sets the likes an artist gets
+     * @param likes for likes
+     */
+    public void setLikes(final Integer likes) {
+        this.likes = likes;
     }
 }

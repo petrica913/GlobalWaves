@@ -1,102 +1,121 @@
 package app.user;
 
-import app.audio.Collections.Podcast;
-import app.pages.HostPage;
-
 import java.util.ArrayList;
 
-/**
- * The type Host.
- */
-public final class Host extends ContentCreator {
-    private ArrayList<Podcast> podcasts;
-    private ArrayList<Announcement> announcements;
+import app.Admin;
+import app.audio.Collections.Podcast;
+import app.audio.Collections.PodcastOutput;
+import app.audio.Files.AudioFile;
+import app.player.PodcastBookmark;
+import app.user.Collections.Announcement;
+import lombok.Getter;
 
-    /**
-     * Instantiates a new Host.
-     *
-     * @param username the username
-     * @param age      the age
-     * @param city     the city
-     */
+public final class Host extends User {
+    @Getter
+    private final ArrayList<Podcast> podcasts;
+    @Getter
+    private final ArrayList<Announcement> announcements;
+
     public Host(final String username, final int age, final String city) {
         super(username, age, city);
         podcasts = new ArrayList<>();
         announcements = new ArrayList<>();
-
-        super.setPage(new HostPage(this));
     }
 
     /**
-     * Gets podcasts.
-     *
-     * @return the podcasts
+     * Adds podcast
+     * @param podcast for podcast
+     * @return the result message
      */
-    public ArrayList<Podcast> getPodcasts() {
-        return podcasts;
+    public String addPodcast(final Podcast podcast) {
+        if (podcasts.contains(podcast)) {
+            return "Podcast already added.";
+        }
+        podcasts.add(podcast);
+        return getUsername() + " has added new podcast successfully.";
     }
 
     /**
-     * Sets podcasts.
-     *
-     * @param podcasts the podcasts
+     * Adds announcement
+     * @param announcement for announcement
+     * @return the result message
      */
-    public void setPodcasts(final ArrayList<Podcast> podcasts) {
-        this.podcasts = podcasts;
+    public String addAnnouncement(final Announcement announcement) {
+        announcements.add(announcement);
+        return getUsername() + " has successfully added new announcement.";
     }
 
     /**
-     * Gets announcements.
-     *
-     * @return the announcements
+     * Removes an announcement
+     * @param announcementToRemove for the announcement
      */
-    public ArrayList<Announcement> getAnnouncements() {
-        return announcements;
+    public void removeAnnouncement(final Announcement announcementToRemove) {
+        for (Announcement announcement : announcements) {
+            if (announcement.equals(announcementToRemove)) {
+                announcements.remove(announcementToRemove);
+                break;
+            }
+        }
     }
 
     /**
-     * Sets announcements.
-     *
-     * @param announcements the announcements
+     * Show podcasts
+     * @return result
      */
-    public void setAnnouncements(final ArrayList<Announcement> announcements) {
-        this.announcements = announcements;
+    public ArrayList<PodcastOutput> showPodcasts() {
+        ArrayList<PodcastOutput> result = new ArrayList<>();
+        for (Podcast podcast : podcasts) {
+            result.add(new PodcastOutput(podcast));
+        }
+        return result;
     }
 
     /**
-     * Gets podcast.
-     *
-     * @param podcastName the podcast name
-     * @return the podcast
+     * Removes a podcast
+     * @param podcastName for name
+     * @return result
      */
-    public Podcast getPodcast(final String podcastName) {
-        for (Podcast podcast: podcasts) {
+    public String removePodcast(final String podcastName) {
+        Podcast podcastToRemove = null;
+        for (Podcast podcast : podcasts) {
             if (podcast.getName().equals(podcastName)) {
-                return podcast;
+                podcastToRemove = podcast;
+                break;
             }
         }
+        if (podcastToRemove == null) {
+            return getUsername() + " doesn't have a podcast with the given name.";
+        }
+        if (!canPodcastBeDeleted(podcastToRemove)) {
+            return getUsername() + " can't delete this podcast.";
+        }
+        podcasts.remove(podcastToRemove);
 
-        return null;
+        return getUsername() + " deleted the podcast successfully.";
     }
 
     /**
-     * Gets announcement.
-     *
-     * @param announcementName the announcement name
-     * @return the announcement
+     * Verifies if the podcast can be deleted
+     * @param podcast for the podcast
+     * @return result
      */
-    public Announcement getAnnouncement(final String announcementName) {
-        for (Announcement announcement: announcements) {
-            if (announcement.getName().equals(announcementName)) {
-                return announcement;
+    private boolean canPodcastBeDeleted(final Podcast podcast) {
+        for (User user : Admin.getInstance().getUsers()) {
+            AudioFile audioFile = user.getPlayer().getCurrentAudioFile();
+            if (audioFile == null) {
+                continue;
+            } else if (user.getPlayer().getSource().getAudioCollection()
+                    .getName().equals(podcast.getName())) {
+                return false;
+            } else if (user.getPlayer().getBookmarks() != null) {
+                for (PodcastBookmark podcastBookmark : user.getPlayer().getBookmarks()) {
+                    if (podcast.getName().equals(podcastBookmark.getName())) {
+                        return false;
+                    }
+                }
             }
         }
-
-        return null;
+        return true;
     }
 
-    @Override
-    public String userType() {
-        return "host";
-    }
 }

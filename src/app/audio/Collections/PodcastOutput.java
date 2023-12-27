@@ -1,14 +1,19 @@
 package app.audio.Collections;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
-
-@Getter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PodcastOutput {
+    @lombok.Getter
     private final String name;
+    @lombok.Getter
     private final ArrayList<String> episodes;
 
+    /**
+     *
+     * @param podcast for transforming podcast in PodcastOutput
+     */
     public PodcastOutput(final Podcast podcast) {
         this.name = podcast.getName();
         this.episodes = new ArrayList<>();
@@ -16,4 +21,5 @@ public class PodcastOutput {
             episodes.add(podcast.getEpisodes().get(i).getName());
         }
     }
+
 }

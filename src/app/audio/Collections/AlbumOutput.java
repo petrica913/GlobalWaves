@@ -1,21 +1,19 @@
 package app.audio.Collections;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
 
-/**
- * The type Album output.
- */
-@Getter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AlbumOutput {
+    @lombok.Getter
     private final String name;
+    @lombok.Getter
     private final ArrayList<String> songs;
 
     /**
-     * Instantiates a new Album output.
-     *
-     * @param album the album
+     * Transforms an album to AlbumOutput type
+     * @param album for the album
      */
     public AlbumOutput(final Album album) {
         this.name = album.getName();
@@ -24,4 +22,5 @@ public class AlbumOutput {
             songs.add(album.getSongs().get(i).getName());
         }
     }
+
 }

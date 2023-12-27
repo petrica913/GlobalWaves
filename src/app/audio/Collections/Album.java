@@ -1,57 +1,58 @@
 package app.audio.Collections;
 
+import java.util.ArrayList;
 import app.audio.Files.AudioFile;
 import app.audio.Files.Song;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
+import lombok.Getter;
 
-/**
- * The type Album.
- */
 @Getter
-@Setter
-public final class Album extends AudioCollection {
-    private String description;
-    private List<Song> songs;
-    private Integer releaseYear;
+public class Album extends AudioCollection {
+    private final List<Song> songs;
+    private final int releaseYear;
+    private final String description;
     private Integer followers;
 
-    /**
-     * Instantiates a new Album.
-     *
-     * @param name        the name
-     * @param description the description
-     * @param owner       the owner
-     * @param songs       the songs
-     * @param releaseYear the release year
-     */
-    public Album(final String name, final String description, final String owner,
-                 final List<Song> songs, final Integer releaseYear) {
-        super(name, owner);
+    public Album(final String name, final String owner) {
+        this(name, owner, 0, "", null);
+    }
+    public Album(final String name, final String owner,
+                 final int releaseYear, final String description, final ArrayList<Song> songs) {
+        super(name, owner, "album");
         this.songs = songs;
-        this.description = description;
         this.releaseYear = releaseYear;
+        this.description = description;
+        this.followers = 0;
     }
 
+    /**
+     * @return the numbers of tracks of an album
+     */
     @Override
     public int getNumberOfTracks() {
         return songs.size();
     }
 
+    /**
+     * @param index for the track index
+     * @return the track with the given index from the album
+     */
     @Override
     public AudioFile getTrackByIndex(final int index) {
-        return songs.get(index);
+        if (index >= 0 && index < songs.size()) {
+            return songs.get(index);
+        }
+        return null;
     }
 
-    @Override
-    public boolean matchesDescription(final String desc) {
-        return description.equals(desc);
-    }
-
-    @Override
-    public boolean containsTrack(final AudioFile track) {
-        return songs.contains(track);
+    /**
+     * @return the number of followers of an album
+     */
+    public Integer getFollowers() {
+        followers = 0;
+        for (Song song : songs) {
+            followers += song.getLikes();
+        }
+        return followers;
     }
 }
