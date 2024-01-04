@@ -132,6 +132,7 @@ public final class Main {
                 case "removeEvent" -> outputs.add(CommandRunner.removeEvent(command));
                 case "getTop5Albums" -> outputs.add(CommandRunner.getTop5Albums(command));
                 case "getTop5Artists" -> outputs.add(CommandRunner.getTop5Artists(command));
+                case "wrapped" -> outputs.add(CommandRunner.wrapped(command));
                 default -> System.out.println("Invalid command " + commandName);
             }
         }

@@ -765,4 +765,12 @@ public final class CommandRunner {
         objectNode.put("result", objectMapper.valueToTree(artists));
         return objectNode;
     }
+
+    public static ObjectNode wrapped(CommandInput command) {
+        List<String> artists = Admin.getInstance().getTop5Artists();
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("timestamp", command.getTimestamp());
+        return objectNode;
+    }
 }

@@ -8,6 +8,9 @@ import app.audio.Files.AudioFile;
 import app.audio.Files.Episode;
 import app.audio.Files.Song;
 import app.player.PodcastBookmark;
+import app.statistics.Factory;
+import app.statistics.Statistics;
+import app.statistics.StatisticsFactory;
 import app.user.User;
 import app.user.Artist;
 import app.user.Host;
@@ -36,6 +39,8 @@ public final class Admin {
     private static int timestamp = 0;
     private static final int MAGIC_CONT = 5;
     private static Admin instance = null;
+    @Getter
+    private static List<User> removedUsers = new ArrayList<>();
 
     public static Admin getInstance() {
         if (instance == null) {
@@ -353,6 +358,7 @@ public final class Admin {
             return username + " can't be deleted.";
         }
         if (userToRemove.getType() == null) {
+            removedUsers.add(userToRemove);
             users.remove(userToRemove);
             for (User user : users) {
                 for (Playlist playlist : userToRemove.getPlaylists()) {
@@ -537,5 +543,19 @@ public final class Admin {
         podcasts = new ArrayList<>();
         albums = new ArrayList<>();
         timestamp = 0;
+    }
+    public void wrapped(final CommandInput commandInput) {
+        String username = commandInput.getUsername();
+        User user = getUser(username);
+        StatisticsFactory factory = new Factory();
+        if (user.getType().equals("user") || user.getType() == null) {
+            Statistics userStats = factory.createUserStatistics(user);
+        }
+        if (user.getType().equals("host")) {
+            Statistics userStats = factory.createHostStatistics((Host) user);
+        }
+        if (user.getType().equals("artist")) {
+            Statistics userStats = factory.createArtistStatistics((Artist) user);
+        }
     }
 }

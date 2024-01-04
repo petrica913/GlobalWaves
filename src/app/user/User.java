@@ -56,6 +56,10 @@ public class User {
     private LikedContentPage likedContentPage;
     @Getter
     private Page nextPage;
+    @Getter
+    private ArrayList<Song> topSongs;
+    @Getter
+    private ArrayList<Episode> topEpisodes;
 
     public User(final String username, final int age, final String city) {
         this.username = username;
@@ -69,6 +73,7 @@ public class User {
         lastSearched = false;
         online = true;
         this.nextPage = new HomePage(this);
+        topSongs = new ArrayList<>();
     }
 
     /**
@@ -144,6 +149,13 @@ public class User {
 
         player.setSource(searchBar.getLastSelected(), searchBar.getLastSearchType());
         searchBar.clearSelection();
+
+        if (player.getSource().getAudioFile().getType().equals("song")) {
+            topSongs.add((Song) player.getSource().getAudioFile());
+        }
+        if (player.getSource().getAudioFile().getType().equals("episode")) {
+            topEpisodes.add((Episode) player.getSource().getAudioFile());
+        }
 
         player.pause();
 
