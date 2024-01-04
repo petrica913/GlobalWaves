@@ -4,6 +4,8 @@ import app.audio.Collections.AudioCollection;
 import app.audio.Collections.Playlist;
 import app.audio.Files.AudioFile;
 import app.audio.LibraryEntry;
+import app.audio.Files.Song;
+import app.audio.Files.Episode;
 import app.utils.Enums;
 import lombok.Getter;
 
@@ -24,6 +26,10 @@ public class Player {
     @Getter
     private ArrayList<PodcastBookmark> bookmarks = new ArrayList<>();
 
+    @Getter
+    private ArrayList<Song> topSongs = new ArrayList<>();
+    @Getter
+    private ArrayList<Episode> topEpisodes = new ArrayList<>();
 
     public Player() {
         this.repeatMode = Enums.RepeatMode.NO_REPEAT;
@@ -179,12 +185,25 @@ public class Player {
             while (time >= source.getDuration()) {
                 time -= source.getDuration();
                 next();
+
+                if (source != null){
+                    if (source.getAudioFile().getType().equals("song")) {
+                        topSongs.add((Song) this.getCurrentAudioFile());
+                    }
+                    if (source.getAudioFile().getType().equals("episode")) {
+                        topEpisodes.add((Episode) this.getCurrentAudioFile());
+                    }
+                }
                 if (paused) {
                     break;
                 }
             }
             if (!paused) {
+
                 source.skip(-time);
+//                if (source.getAudioFile().getType().equals("song")) {
+//                    topSongs.add((Song) this.getCurrentAudioFile());
+//                }
             }
         }
     }

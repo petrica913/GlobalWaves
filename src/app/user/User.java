@@ -25,6 +25,7 @@ import app.user.Collections.Merch;
 import app.utils.Enums;
 import fileio.input.PodcastInput;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +57,10 @@ public class User {
     private LikedContentPage likedContentPage;
     @Getter
     private Page nextPage;
+    @Setter
     @Getter
     private ArrayList<Song> topSongs;
+    @Setter
     @Getter
     private ArrayList<Episode> topEpisodes;
 
@@ -153,9 +156,9 @@ public class User {
         if (player.getSource().getAudioFile().getType().equals("song")) {
             topSongs.add((Song) player.getSource().getAudioFile());
         }
-        if (player.getSource().getAudioFile().getType().equals("episode")) {
-            topEpisodes.add((Episode) player.getSource().getAudioFile());
-        }
+//        if (player.getSource().getAudioFile().getType().equals("episode")) {
+//            topEpisodes.add((Episode) player.getSource().getAudioFile());
+//        }
 
         player.pause();
 
@@ -546,6 +549,8 @@ public class User {
     public void simulateTime(final int time) {
         if (online) {
             player.simulatePlayer(time);
+            topSongs = player.getTopSongs();
+            topEpisodes = player.getTopEpisodes();
             homePage = new HomePage(this);
             likedContentPage = new LikedContentPage(this);
         }
@@ -845,4 +850,5 @@ public class User {
     public void setFollowedPlaylists(final ArrayList<Playlist> followedPlaylists) {
         this.followedPlaylists = followedPlaylists;
     }
+
 }

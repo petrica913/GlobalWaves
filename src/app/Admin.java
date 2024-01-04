@@ -17,6 +17,7 @@ import app.user.Host;
 import app.user.pages.ArtistPage;
 import app.user.pages.HostPage;
 import app.user.pages.Page;
+import com.fasterxml.jackson.databind.JsonNode;
 import fileio.input.EpisodeInput;
 import fileio.input.PodcastInput;
 import fileio.input.SongInput;
@@ -544,18 +545,27 @@ public final class Admin {
         albums = new ArrayList<>();
         timestamp = 0;
     }
-    public void wrapped(final CommandInput commandInput) {
+    public JsonNode wrapped(final CommandInput commandInput) {
         String username = commandInput.getUsername();
         User user = getUser(username);
+        JsonNode result;
+        Statistics userStats = null;
         StatisticsFactory factory = new Factory();
-        if (user.getType().equals("user") || user.getType() == null) {
-            Statistics userStats = factory.createUserStatistics(user);
+        assert user != null;
+        if (user.getType() == null) {
+            user.setType("user");
+        }
+        if (user.getType().equals("user")) {
+            userStats = factory.createUserStatistics(user);
         }
         if (user.getType().equals("host")) {
-            Statistics userStats = factory.createHostStatistics((Host) user);
+            userStats = factory.createHostStatistics((Host) user);
         }
         if (user.getType().equals("artist")) {
-            Statistics userStats = factory.createArtistStatistics((Artist) user);
+            userStats = factory.createArtistStatistics((Artist) user);
         }
+        assert userStats != null;
+        result = userStats.generateStatistics();
+        return result;
     }
 }

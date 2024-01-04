@@ -8,6 +8,7 @@ import app.searchBar.Filters;
 import app.user.Artist;
 import app.user.Host;
 import app.user.User;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.input.CommandInput;
@@ -767,10 +768,17 @@ public final class CommandRunner {
     }
 
     public static ObjectNode wrapped(CommandInput command) {
-        List<String> artists = Admin.getInstance().getTop5Artists();
+        JsonNode stats = Admin.getInstance().wrapped(command);
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", command.getCommand());
         objectNode.put("timestamp", command.getTimestamp());
+        objectNode.set("result", stats);
+
+        return objectNode;
+    }
+    public static ObjectNode endProgram() {
+        Admin admin = Admin.getInstance();
+        ObjectNode objectNode = objectMapper.createObjectNode();
         return objectNode;
     }
 }

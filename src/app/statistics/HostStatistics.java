@@ -1,6 +1,8 @@
 package app.statistics;
 
 import app.user.Host;
+import com.fasterxml.jackson.databind.JsonNode;
+
 public class HostStatistics implements Statistics{
     private final Host host;
     public HostStatistics(Host host) {
@@ -8,7 +10,7 @@ public class HostStatistics implements Statistics{
     }
 
     @Override
-    public String generateStatistics() {
+    public JsonNode generateStatistics() {
 //        implement the logic for generating host stats
         return null;
     }
