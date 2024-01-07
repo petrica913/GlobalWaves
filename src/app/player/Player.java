@@ -1,11 +1,13 @@
 package app.player;
 
+import app.Admin;
 import app.audio.Collections.AudioCollection;
 import app.audio.Collections.Playlist;
 import app.audio.Files.AudioFile;
 import app.audio.LibraryEntry;
 import app.audio.Files.Song;
 import app.audio.Files.Episode;
+import app.user.Artist;
 import app.utils.Enums;
 import lombok.Getter;
 
@@ -183,12 +185,19 @@ public class Player {
     public void simulatePlayer(int time) {
         if (!paused) {
             while (time >= source.getDuration()) {
+
                 time -= source.getDuration();
                 next();
-
                 if (source != null){
-                    if (source.getAudioFile().getType().equals("song")) {
+                    if (source.getAudioFile().getType().equals("song") && source.getAudioCollection() != null) {
                         topSongs.add((Song) this.getCurrentAudioFile());
+                        String artistName = ((Song) source.getAudioFile()).getArtist();
+                        Artist artist = (Artist) Admin.getUser(artistName);
+                        assert artist != null;
+                        artist.setPlay(true);
+                        Integer listeners = artist.getListeners();
+                        listeners++;
+                        artist.setListeners(listeners);
                     }
                     if (source.getAudioFile().getType().equals("episode")) {
                         topEpisodes.add((Episode) this.getCurrentAudioFile());
@@ -199,12 +208,9 @@ public class Player {
                 }
             }
             if (!paused) {
-
                 source.skip(-time);
-//                if (source.getAudioFile().getType().equals("song")) {
-//                    topSongs.add((Song) this.getCurrentAudioFile());
-//                }
             }
+
         }
     }
 
@@ -213,6 +219,7 @@ public class Player {
      */
     public void next() {
         paused = source.setNextAudioFile(repeatMode, shuffle);
+
         if (repeatMode == Enums.RepeatMode.REPEAT_ONCE) {
             repeatMode = Enums.RepeatMode.NO_REPEAT;
         }

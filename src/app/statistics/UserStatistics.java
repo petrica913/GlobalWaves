@@ -35,28 +35,26 @@ public class UserStatistics implements Statistics {
         Map<String, Integer> songListens = new HashMap<>();
         Map<String, Integer> episodeListens = new HashMap<>();
 
-       // for (User user : allUsers) {
-            List<Song> topSongs = user.getTopSongs();
-            List<Episode> topEpisodes = user.getTopEpisodes();
+        List<Song> topSongs = user.getTopSongs();
+        List<Episode> topEpisodes = user.getTopEpisodes();
 
-            for (Song song : topSongs) {
-                String artistName = song.getArtist();
-                artistListens.put(artistName, artistListens.getOrDefault(artistName, 0) + 1);
+        for (Song song : topSongs) {
+            String artistName = song.getArtist();
+            artistListens.put(artistName, artistListens.getOrDefault(artistName, 0) + 1);
 
-                String genreName = song.getGenre();
-                genreListens.put(genreName, genreListens.getOrDefault(genreName, 0) + 1);
+            String genreName = song.getGenre();
+            genreListens.put(genreName, genreListens.getOrDefault(genreName, 0) + 1);
 
-                String albumName = song.getAlbum();
-                albumListens.put(albumName, albumListens.getOrDefault(albumName, 0) + 1);
+            String albumName = song.getAlbum();
+            albumListens.put(albumName, albumListens.getOrDefault(albumName, 0) + 1);
 
-                String songName = song.getName();
-                songListens.put(songName, songListens.getOrDefault(songName, 0) + 1);
-            }
-            for (Episode episode : topEpisodes) {
-                String episodeName = episode.getName();
-                episodeListens.put(episodeName, episodeListens.getOrDefault(episodeName, 0) + 1);
-            }
-      //  }
+            String songName = song.getName();
+            songListens.put(songName, songListens.getOrDefault(songName, 0) + 1);
+        }
+        for (Episode episode : topEpisodes) {
+            String episodeName = episode.getName();
+            episodeListens.put(episodeName, episodeListens.getOrDefault(episodeName, 0) + 1);
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode jsonNode = JsonNodeFactory.instance.objectNode();
@@ -67,7 +65,9 @@ public class UserStatistics implements Statistics {
         resultNode.set("topSongs", objectMapper.valueToTree(getTopNEntries(songListens, 5)));
         resultNode.set("topAlbums", objectMapper.valueToTree(getTopNEntries(albumListens, 5)));
         resultNode.set("topEpisodes", objectMapper.valueToTree(getTopNEntries(episodeListens, 5)));
-
+        if (topSongs.isEmpty() && topEpisodes.isEmpty()) {
+            resultNode = null;
+        }
         return resultNode;
     }
 

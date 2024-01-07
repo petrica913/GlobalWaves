@@ -59,7 +59,18 @@ public class ArtistStatistics implements Statistics {
         }
 
         List<String> topFans = artistFans.stream()
-                .map(User::getUsername)
+                .collect(Collectors.toMap(
+                        User::getUsername,
+                        user -> user.getTopSongs().stream()
+                                .filter(song -> song.getArtist().equals(artist.getUsername()))
+                                .mapToInt(song -> 1)
+                                .sum()
+                ))
+                .entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed()
+                        .thenComparing(Map.Entry.comparingByKey()))
+                .limit(5)
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
         int totalListeners = artistFans.size();

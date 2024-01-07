@@ -2,6 +2,7 @@ package app.searchBar;
 
 
 import app.Admin;
+import app.audio.Collections.Album;
 import app.audio.LibraryEntry;
 import app.audio.UserEntry;
 import app.user.Artist;
@@ -10,6 +11,7 @@ import app.user.User;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static app.searchBar.FilterUtils.filterByAlbum;
@@ -119,7 +121,9 @@ public class SearchBar {
 
                 break;
             case "album":
-                entries = new ArrayList<>(Admin.getAlbums());
+                List<Album> albums = Admin.getAlbums();
+                albums.sort(Comparator.comparing(album -> album.getArtist().getOrder()));
+                entries = new ArrayList<>(albums);
                 if (filters.getName() != null) {
                     entries = filterByName(entries, filters.getName());
                 }
@@ -127,6 +131,7 @@ public class SearchBar {
                 if (filters.getOwner() != null) {
                     entries = filterByOwner(entries, filters.getOwner());
                 }
+
                 break;
             case "artist":
                 entries = new ArrayList<>();

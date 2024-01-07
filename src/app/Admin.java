@@ -18,12 +18,16 @@ import app.user.pages.ArtistPage;
 import app.user.pages.HostPage;
 import app.user.pages.Page;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.input.EpisodeInput;
 import fileio.input.PodcastInput;
 import fileio.input.SongInput;
 import fileio.input.UserInput;
 import fileio.input.CommandInput;
 import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -42,6 +46,12 @@ public final class Admin {
     private static Admin instance = null;
     @Getter
     private static List<User> removedUsers = new ArrayList<>();
+    @Setter
+    @Getter
+    private Integer albumsCount = 0;
+    @Setter
+    @Getter
+    private Integer artistsCount = 0;
 
     public static Admin getInstance() {
         if (instance == null) {
@@ -322,6 +332,8 @@ public final class Admin {
             case "artist":
                 Artist artist = new Artist(username, age, city);
                 artist.setType("artist");
+                artistsCount++;
+                artist.setOrder(artistsCount);
                 users.add(artist);
                 break;
             case "host":
@@ -566,6 +578,30 @@ public final class Admin {
         }
         assert userStats != null;
         result = userStats.generateStatistics();
+        return result;
+    }
+    public JsonNode endProgram() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        Artist artist;
+        for (User user : users) {
+            if (user.getType() == null) {
+                user.setType("user");
+            }
+            if (user.getType().equals("artist")) {
+                artist = (Artist) user;
+                if (!(artist.isPlay()) && !(artist.isBoughtMerch())) {
+                    continue;
+                }
+                ObjectNode artistStats = objectMapper.createObjectNode();
+                artistStats.put("merchRevenue", artist.getMerchRevenue());
+                artistStats.put("songRevenue", artist.getSongRevenue());
+                artistStats.put("ranking", artist.getRanking());
+                artistStats.put("mostProfitableSong", artist.getMostProfitableSong());
+
+                result.set(artist.getUsername(), artistStats);
+            }
+        }
         return result;
     }
 }

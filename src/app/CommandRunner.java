@@ -430,9 +430,9 @@ public final class CommandRunner {
         String message = Admin.getInstance().addUser(commandInput);
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", commandInput.getCommand());
-        objectNode.put("message", message);
-        objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
         return objectNode;
     }
     /**
@@ -446,14 +446,14 @@ public final class CommandRunner {
         if (Admin.getUser(commandInput.getUsername()) != null) {
             message = Admin.getUser(commandInput.getUsername()).addAlbum(commandInput.getName(),
                     commandInput.getReleaseYear(), commandInput.getDescription(),
-                    commandInput.getSongs());
+                    commandInput.getSongs(), Admin.getInstance().getAlbumsCount());
         } else {
             message = "The username " + commandInput.getUsername() + " doesn't exist.";
         }
         objectNode.put("command", commandInput.getCommand());
-        objectNode.put("message", message);
-        objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
         return objectNode;
     }
     /**
@@ -771,14 +771,22 @@ public final class CommandRunner {
         JsonNode stats = Admin.getInstance().wrapped(command);
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
         objectNode.put("timestamp", command.getTimestamp());
-        objectNode.set("result", stats);
-
+        if (stats != null) {
+            objectNode.set("result", stats);
+        } else {
+            String message = "No data to show for user " + command.getUsername() + ".";
+            objectNode.put("message", message);
+        }
         return objectNode;
     }
-    public static ObjectNode endProgram() {
-        Admin admin = Admin.getInstance();
+
+    public static ObjectNode endProgram () {
+        JsonNode result = Admin.getInstance().endProgram();
         ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", "endProgram");
+        objectNode.put("result", result);
         return objectNode;
     }
 }

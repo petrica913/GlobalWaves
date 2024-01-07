@@ -63,6 +63,9 @@ public class User {
     @Setter
     @Getter
     private ArrayList<Episode> topEpisodes;
+    @Setter
+    @Getter
+    private Integer listeners;
 
     public User(final String username, final int age, final String city) {
         this.username = username;
@@ -77,6 +80,7 @@ public class User {
         online = true;
         this.nextPage = new HomePage(this);
         topSongs = new ArrayList<>();
+        listeners = 0;
     }
 
     /**
@@ -155,6 +159,9 @@ public class User {
 
         if (player.getSource().getAudioFile().getType().equals("song")) {
             topSongs.add((Song) player.getSource().getAudioFile());
+            Integer listeners = this.getListeners();
+            listeners++;
+            this.setListeners(listeners);
         }
 //        if (player.getSource().getAudioFile().getType().equals("episode")) {
 //            topEpisodes.add((Episode) player.getSource().getAudioFile());
@@ -544,7 +551,7 @@ public class User {
 
     /**
      * Simulates the time for the user
-     * @param time for time
+     * @param time for the difference between last 2 timestamps
      */
     public void simulateTime(final int time) {
         if (online) {
@@ -627,12 +634,14 @@ public class User {
      * @return the results message
      */
     public String addAlbum(final String albumName, final int releaseYear,
-                           final String description, final ArrayList<Song> songs) {
+                           final String description, final ArrayList<Song> songs,
+                           final Integer order) {
         if (!(this.getType().equals("artist"))) {
             return username + " is not an artist.";
         }
         Artist artist = (Artist) this;
-        Album newAlbum = new Album(albumName, username, releaseYear, description, songs);
+        Album newAlbum = new Album(albumName, username, releaseYear,
+                description, songs, order, (Artist) this);
         if (artist.getAlbums().stream().anyMatch(album -> album.getName().equals(albumName))) {
             return username + " has another album with the same name.";
         }
@@ -642,6 +651,10 @@ public class User {
         List<Album> newlist = Admin.getAlbums();
         newlist.add(newAlbum);
         Admin.getInstance().setAlbums(newlist);
+        Integer count = Admin.getInstance().getAlbumsCount();
+        count += 1;
+        Admin.getInstance().setAlbumsCount(count);
+        newAlbum.setOrder(count);
         return artist.addAlbum(newAlbum);
     }
 

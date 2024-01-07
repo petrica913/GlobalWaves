@@ -13,6 +13,7 @@ import app.user.Collections.Event;
 import app.user.Collections.Merch;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Artist extends User {
     @Getter
@@ -23,6 +24,24 @@ public class Artist extends User {
     private ArrayList<Merch>  merches;
     @Getter
     private Integer likes;
+    @Getter
+    private double songRevenue;
+    @Getter
+    private double merchRevenue;
+    @Getter
+    @Setter
+    private Integer ranking;
+    @Getter
+    private String mostProfitableSong;
+    @Setter
+    @Getter
+    private boolean play;
+    @Setter
+    @Getter
+    private boolean boughtMerch;
+    @Setter
+    @Getter
+    private Integer order;
 
     public Artist(final String username, final int age, final String city) {
         super(username, age, city);
@@ -30,6 +49,10 @@ public class Artist extends User {
         events = new ArrayList<>();
         merches = new ArrayList<>();
         likes = 0;
+        songRevenue = 0;
+        merchRevenue = 0;
+        ranking = 1;
+        mostProfitableSong = "N/A";
     }
 
     /**
