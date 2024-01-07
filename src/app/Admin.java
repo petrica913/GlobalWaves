@@ -583,25 +583,42 @@ public final class Admin {
     public JsonNode endProgram() {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
-        Artist artist;
-        for (User user : users) {
-            if (user.getType() == null) {
-                user.setType("user");
-            }
-            if (user.getType().equals("artist")) {
-                artist = (Artist) user;
-                if (!(artist.isPlay()) && !(artist.isBoughtMerch())) {
-                    continue;
-                }
-                ObjectNode artistStats = objectMapper.createObjectNode();
-                artistStats.put("merchRevenue", artist.getMerchRevenue());
-                artistStats.put("songRevenue", artist.getSongRevenue());
-                artistStats.put("ranking", artist.getRanking());
-                artistStats.put("mostProfitableSong", artist.getMostProfitableSong());
 
-                result.set(artist.getUsername(), artistStats);
+        ArrayList<Artist> artistsList = new ArrayList<>();
+
+        for (User user : Admin.getInstance().getUsers()) {
+            if (user.getType() == null || !user.getType().equals("artist")) {
+                continue;
             }
+
+            Artist artist = (Artist) user;
+            artistsList.add(artist);
         }
+
+        artistsList.sort(Comparator
+                .comparing(Artist::getSongRevenue)
+                .thenComparing(Comparator.comparing(Artist::getUsername, Comparator.naturalOrder()))
+        );
+
+        int count = 1;
+
+        for (Artist artist : artistsList) {
+            if (!(artist.isPlay() || artist.isBoughtMerch())) {
+                continue;
+            }
+
+            artist.setRanking(count);
+            ObjectNode artistStats = objectMapper.createObjectNode();
+            artistStats.put("merchRevenue", artist.getMerchRevenue());
+            artistStats.put("songRevenue", artist.getSongRevenue());
+            artistStats.put("ranking", artist.getRanking());
+            artistStats.put("mostProfitableSong", artist.getMostProfitableSong());
+
+            result.set(artist.getUsername(), artistStats);
+            count++;
+        }
+
         return result;
     }
+
 }
