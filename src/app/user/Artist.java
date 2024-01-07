@@ -191,4 +191,8 @@ public class Artist extends User {
     public void setLikes(final Integer likes) {
         this.likes = likes;
     }
+    public void updateSongRevenue(Integer totalSongs, Integer artistSongs) {
+        this.songRevenue = this.songRevenue + (double) (1000000 * artistSongs) / totalSongs;
+        this.songRevenue = Math.round(this.songRevenue * 100.0) / 100.0;
+    }
 }

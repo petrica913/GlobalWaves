@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.input.CommandInput;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public final class CommandRunner {
@@ -773,10 +774,15 @@ public final class CommandRunner {
         objectNode.put("command", command.getCommand());
         objectNode.put("user", command.getUsername());
         objectNode.put("timestamp", command.getTimestamp());
+        String message = null;
+        if (Admin.getUser(command.getUsername()).getType().equals("artist") && stats == null) {
+            message = "No data to show for artist " + command.getUsername() + ".";
+            objectNode.put("message", message);
+        }
         if (stats != null) {
             objectNode.set("result", stats);
-        } else {
-            String message = "No data to show for user " + command.getUsername() + ".";
+        } else if (message == null) {
+            message = "No data to show for user " + command.getUsername() + ".";
             objectNode.put("message", message);
         }
         return objectNode;
@@ -788,5 +794,46 @@ public final class CommandRunner {
         objectNode.put("command", "endProgram");
         objectNode.put("result", result);
         return objectNode;
+    }
+
+    public static ObjectNode buyPremium(CommandInput command) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
+        objectNode.put("timestamp", command.getTimestamp());
+        User user = Admin.getUser(command.getUsername());
+        String message = null;
+        if (user == null) {
+            message = "The username " + command.getUsername() + " doesn't exist.";
+        } else if (user.getType() == null || user.getType().equals("user")) {
+            if (user.getCredits() == 0) {
+                message = user.getUsername() + " bought the subscription successfully.";
+                user.buyPremium();
+            } else {
+                message = user.getUsername() + " is already a premium user.";
+            }
+        }
+        objectNode.put("message", message);
+        return  objectNode;
+    }
+    public static ObjectNode cancelPremium(CommandInput command) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
+        objectNode.put("timestamp", command.getTimestamp());
+        User user = Admin.getUser(command.getUsername());
+        String message = null;
+        if (user == null) {
+            message = "The username " + command.getUsername() + " doesn't exist.";
+        } else if (user.getType() == null || user.getType().equals("user")) {
+            if (user.getCredits() != 0) {
+                message = user.getUsername() + " cancelled the subscription successfully.";
+                user.cancelPremium();
+            } else {
+                message = user.getUsername() + " is not a premium user.";
+            }
+        }
+        objectNode.put("message", message);
+        return  objectNode;
     }
 }

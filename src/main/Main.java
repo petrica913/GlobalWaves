@@ -133,6 +133,8 @@ public final class Main {
                 case "getTop5Albums" -> outputs.add(CommandRunner.getTop5Albums(command));
                 case "getTop5Artists" -> outputs.add(CommandRunner.getTop5Artists(command));
                 case "wrapped" -> outputs.add(CommandRunner.wrapped(command));
+                case "buyPremium" -> outputs.add(CommandRunner.buyPremium(command));
+                case "cancelPremium" -> outputs.add(CommandRunner.cancelPremium(command));
                 default -> System.out.println("Invalid command " + commandName);
             }
         }

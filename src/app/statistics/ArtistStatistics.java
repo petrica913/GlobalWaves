@@ -83,6 +83,9 @@ public class ArtistStatistics implements Statistics {
         resultNode.set("topSongs", createTopNode(songListens));
         resultNode.set("topFans", objectMapper.valueToTree(topFans));
         resultNode.put("listeners", totalListeners);
+        if (totalListeners == 0) {
+            resultNode = null;
+        }
 
         return resultNode;
     }

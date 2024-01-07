@@ -28,7 +28,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class User {
     @Getter
@@ -66,6 +68,9 @@ public class User {
     @Setter
     @Getter
     private Integer listeners;
+    @Setter
+    @Getter
+    private Integer credits;
 
     public User(final String username, final int age, final String city) {
         this.username = username;
@@ -81,6 +86,7 @@ public class User {
         this.nextPage = new HomePage(this);
         topSongs = new ArrayList<>();
         listeners = 0;
+        credits = 0;
     }
 
     /**
@@ -862,6 +868,29 @@ public class User {
      */
     public void setFollowedPlaylists(final ArrayList<Playlist> followedPlaylists) {
         this.followedPlaylists = followedPlaylists;
+    }
+
+    public void buyPremium() {
+        this.credits = 1000000;
+    }
+    public Map<String, Integer> artistsListenedTo() {
+        Map<String, Integer> artistListens = new HashMap<>();
+        for (Song song : topSongs) {
+            String artistName = song.getArtist();
+            artistListens.put(artistName, artistListens.getOrDefault(artistName, 0) + 1);
+        }
+        return artistListens;
+    }
+    public void cancelPremium() {
+        Map<String, Integer> artistsListens = this.artistsListenedTo();
+        int totalListens = artistsListens.values().stream().mapToInt(Integer::intValue).sum();
+        for (Map.Entry<String, Integer> entry : artistsListens.entrySet()) {
+            String artist = entry.getKey();
+            Integer listens = entry.getValue();
+            Artist artist1 = (Artist) Admin.getUser(artist);
+            artist1.updateSongRevenue(totalListens, listens);
+        }
+        this.credits = 0;
     }
 
 }

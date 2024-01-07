@@ -448,6 +448,9 @@ public final class Admin {
      */
     public static boolean canUserBeDeleted(final User userToRemove) {
         boolean returnValue = true;
+        if (userToRemove.getCredits() != 0) {
+            return false;
+        }
         for (User user : users) {
             AudioFile audioFile = user.getPlayer().getCurrentAudioFile();
             AudioCollection audioCollection = null;
@@ -581,6 +584,14 @@ public final class Admin {
         return result;
     }
     public JsonNode endProgram() {
+        for (User user : users) {
+            if (user.getType() == null) {
+                user.setType("user");
+            }
+            if (user.getType().equals("user")) {
+                user.cancelPremium();
+            }
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
 
