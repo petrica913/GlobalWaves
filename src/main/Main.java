@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * The entry point to this homework. It runs the checker that tests your implentation.
@@ -135,6 +136,7 @@ public final class Main {
                 case "wrapped" -> outputs.add(CommandRunner.wrapped(command));
                 case "buyPremium" -> outputs.add(CommandRunner.buyPremium(command));
                 case "cancelPremium" -> outputs.add(CommandRunner.cancelPremium(command));
+                case "adBreak" -> outputs.add(CommandRunner.adBreak(command, library));
                 default -> System.out.println("Invalid command " + commandName);
             }
         }

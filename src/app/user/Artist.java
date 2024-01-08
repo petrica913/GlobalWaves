@@ -192,7 +192,7 @@ public class Artist extends User {
         this.likes = likes;
     }
     public void updateSongRevenue(Integer totalSongs, Integer artistSongs) {
-        this.songRevenue = this.songRevenue + (double) (1000000 * artistSongs) / totalSongs;
-        this.songRevenue = Math.round(this.songRevenue * 100.0) / 100.0;
+        this.songRevenue = this.songRevenue + (double) (1000000 / totalSongs * artistSongs);
+//        this.songRevenue = Math.round(this.songRevenue * 100.0) / 100.0;
     }
 }

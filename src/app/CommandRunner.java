@@ -3,6 +3,7 @@ package app;
 import app.audio.Collections.AlbumOutput;
 import app.audio.Collections.PlaylistOutput;
 import app.audio.Collections.PodcastOutput;
+import app.audio.Files.Song;
 import app.player.PlayerStats;
 import app.searchBar.Filters;
 import app.user.Artist;
@@ -12,6 +13,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.input.CommandInput;
+import fileio.input.LibraryInput;
+import fileio.input.SongInput;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -831,6 +834,30 @@ public final class CommandRunner {
                 user.cancelPremium();
             } else {
                 message = user.getUsername() + " is not a premium user.";
+            }
+        }
+        objectNode.put("message", message);
+        return  objectNode;
+    }
+    public static ObjectNode adBreak (CommandInput command, LibraryInput library) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
+        objectNode.put("timestamp", command.getTimestamp());
+        User user = Admin.getUser(command.getUsername());
+        SongInput adBreak = library.getSongs().getFirst();
+        Song ad = new Song(adBreak.getName(), adBreak.getDuration(), adBreak.getAlbum() ,
+                    adBreak.getTags(),adBreak.getLyrics(),adBreak.getGenre(),
+                    adBreak.getReleaseYear(), adBreak.getArtist());
+        String message = null;
+        if (user == null) {
+            message = "The username " + command.getUsername() + " doesn't exist.";
+        } else if (user.getType() == null || user.getType().equals("user")) {
+            if (!user.getPlayer().getSource().getAudioFile().getType().equals("song")) {
+                message = user.getUsername() + " is not playing any music.";
+            } else {
+                message = user.getUsername() + "Ad inserted successfully.";
+                user.adBreak(command.getTimestamp(), ad);
             }
         }
         objectNode.put("message", message);

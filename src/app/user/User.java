@@ -23,6 +23,7 @@ import app.user.pages.LikedContentPage;
 import app.user.Collections.Event;
 import app.user.Collections.Merch;
 import app.utils.Enums;
+import fileio.input.LibraryInput;
 import fileio.input.PodcastInput;
 import lombok.Getter;
 import lombok.Setter;
@@ -71,6 +72,9 @@ public class User {
     @Setter
     @Getter
     private Integer credits;
+    @Getter
+    @Setter
+    private Advertisement advertisement;
 
     public User(final String username, final int age, final String city) {
         this.username = username;
@@ -883,7 +887,7 @@ public class User {
     }
     public void cancelPremium() {
         Map<String, Integer> artistsListens = this.artistsListenedTo();
-        int totalListens = artistsListens.values().stream().mapToInt(Integer::intValue).sum();
+        int totalListens = topSongs.size();
         for (Map.Entry<String, Integer> entry : artistsListens.entrySet()) {
             String artist = entry.getKey();
             Integer listens = entry.getValue();
@@ -892,5 +896,11 @@ public class User {
         }
         this.credits = 0;
     }
+    public void adBreak(Integer timestamp, Song ad) {
+        if (this.player.getSource().getAudioCollection().getType().equals("playlist")) {
+            Playlist playlist = (Playlist) this.player.getSource().getAudioCollection();
+            Song currentSong = (Song) this.player.getCurrentAudioFile();
 
+        }
+    }
 }
