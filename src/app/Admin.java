@@ -607,7 +607,7 @@ public final class Admin {
         }
 
         artistsList.sort(Comparator
-                .comparing(Artist::getSongRevenue)
+                .comparing(Artist::getSongRevenue, Comparator.reverseOrder())
                 .thenComparing(Comparator.comparing(Artist::getUsername, Comparator.naturalOrder()))
         );
 
@@ -617,11 +617,14 @@ public final class Admin {
             if (!(artist.isPlay() || artist.isBoughtMerch())) {
                 continue;
             }
-
+            double val = artist.getSongRevenue();
+            val = val * 100;
+            val = Math.round(val);
+            val = val / 100;
             artist.setRanking(count);
             ObjectNode artistStats = objectMapper.createObjectNode();
             artistStats.put("merchRevenue", artist.getMerchRevenue());
-            artistStats.put("songRevenue", artist.getSongRevenue());
+            artistStats.put("songRevenue", val);
             artistStats.put("ranking", artist.getRanking());
             artistStats.put("mostProfitableSong", artist.getMostProfitableSong());
 

@@ -853,7 +853,9 @@ public final class CommandRunner {
         if (user == null) {
             message = "The username " + command.getUsername() + " doesn't exist.";
         } else if (user.getType() == null || user.getType().equals("user")) {
-            if (!user.getPlayer().getSource().getAudioFile().getType().equals("song")) {
+            if (user.getPlayer().getSource() == null){
+                message = user.getUsername() + " is not playing any music.";
+            } else if (!user.getPlayer().getSource().getAudioFile().getType().equals("song")) {
                 message = user.getUsername() + " is not playing any music.";
             } else {
                 message = user.getUsername() + "Ad inserted successfully.";

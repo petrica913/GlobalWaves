@@ -28,10 +28,7 @@ import fileio.input.PodcastInput;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class User {
     @Getter
@@ -75,6 +72,9 @@ public class User {
     @Getter
     @Setter
     private Advertisement advertisement;
+    @Setter
+    @Getter
+    private ArrayList<Song> premiumSongs;
 
     public User(final String username, final int age, final String city) {
         this.username = username;
@@ -91,6 +91,9 @@ public class User {
         topSongs = new ArrayList<>();
         listeners = 0;
         credits = 0;
+        premiumSongs = new ArrayList<>();
+        player.setOwner(this);
+        advertisement = new Advertisement();
     }
 
     /**
@@ -172,10 +175,16 @@ public class User {
             Integer listeners = this.getListeners();
             listeners++;
             this.setListeners(listeners);
+            if (this.getCredits() != 0) {
+                premiumSongs.add((Song) player.getSource().getAudioFile());
+            }
+            if (this.getCredits() == 0) {
+                this.addSongToAd((Song) player.getSource().getAudioFile());
+            }
         }
-//        if (player.getSource().getAudioFile().getType().equals("episode")) {
-//            topEpisodes.add((Episode) player.getSource().getAudioFile());
-//        }
+        if (player.getSource().getAudioFile().getType().equals("episode")) {
+            topEpisodes.add((Episode) player.getSource().getAudioFile());
+        }
 
         player.pause();
 
@@ -879,28 +888,105 @@ public class User {
     }
     public Map<String, Integer> artistsListenedTo() {
         Map<String, Integer> artistListens = new HashMap<>();
-        for (Song song : topSongs) {
+        for (Song song : premiumSongs) {
             String artistName = song.getArtist();
             artistListens.put(artistName, artistListens.getOrDefault(artistName, 0) + 1);
         }
         return artistListens;
     }
+    public Map<String, Integer> songsListenedTo() {
+        Map<String, Integer> songs = new HashMap<>();
+        for (Song song : premiumSongs) {
+            songs.put(song.getName(), songs.getOrDefault(song.getName(), 0) + 1);
+        }
+        return songs;
+    }
     public void cancelPremium() {
         Map<String, Integer> artistsListens = this.artistsListenedTo();
-        int totalListens = topSongs.size();
+        Map<String, Integer> songs = this.songsListenedTo();
+        int totalListens = premiumSongs.size();
         for (Map.Entry<String, Integer> entry : artistsListens.entrySet()) {
             String artist = entry.getKey();
             Integer listens = entry.getValue();
             Artist artist1 = (Artist) Admin.getUser(artist);
             artist1.updateSongRevenue(totalListens, listens);
+            for (Song song : premiumSongs) {
+                if (song.matchesArtist(artist1.getUsername())) {
+                    artist1.addProfitableSong(song);
+                }
+            }
+            for (Map.Entry<String, Integer> entrySong : songs.entrySet()) {
+                String songName = entrySong.getKey();
+                Integer listensSong = entrySong.getValue();
+                for (Song song : artist1.getProfitableSongs()) {
+                    if (song.getName().equals(songName) && song.matchesArtist(artist1.getUsername())) {
+                        double revenue = (double) 1000000 / listens * listensSong;
+                        song.updateRevenue(revenue);
+                        break;
+                    }
+                }
+            }
+            ArrayList<Song> sorted = artist1.getProfitableSongs();
+            sorted.sort(
+                    Comparator.comparingDouble(Song::getRevenue)
+                            .reversed()
+                            .thenComparing(Song::getName)
+            );
+            Song mostProfitable = sorted.get(0);
+            double mostPorfitableValue = mostProfitable.getRevenue();
+            for (Song song : artist1.getProfitableSongs()) {
+                if (song.getRevenue() == mostPorfitableValue) {
+                    artist1.setMostProfitableSong(song);
+                    break;
+                }
+            }
         }
         this.credits = 0;
+        this.premiumSongs.clear();
     }
     public void adBreak(Integer timestamp, Song ad) {
+        if (this.player.getSource().getAudioCollection() == null
+                && this.player.getSource().getAudioFile().getType().equals("song")) {
+            Playlist playlist = new Playlist("adPlaylist", this.username);
+            playlist.addSong((Song) this.player.getSource().getAudioFile());
+            playlist.addSong(ad);
+            this.player.getSource().setAudioCollection(playlist);
+            this.advertisement.setAd(ad);
+            this.advertisement = new Advertisement();
+            this.advertisement.setBeenPlayed(true);
+            return;
+        }
         if (this.player.getSource().getAudioCollection().getType().equals("playlist")) {
             Playlist playlist = (Playlist) this.player.getSource().getAudioCollection();
             Song currentSong = (Song) this.player.getCurrentAudioFile();
-
+            if (playlist.containsSong(currentSong)) {
+                int currentIndex = playlist.getIndexOfTrack(currentSong);
+                playlist.addSongAtIndex(currentIndex + 1, ad);
+            }
+            this.advertisement.setAd(ad);
+            this.advertisement = new Advertisement();
+            this.advertisement.setBeenPlayed(true);
+            return;
         }
+        if (this.player.getSource().getAudioCollection().getType().equals("album")) {
+            Album album = (Album) this.player.getSource().getAudioCollection();
+            Song currentSong = (Song) this.player.getCurrentAudioFile();
+            if (album.containsSong(currentSong)) {
+                int currentIndex = album.getIndexOfTrack(currentSong);
+                album.addSongAtIndex(currentIndex + 1, ad);
+            }
+            this.advertisement.setAd(ad);
+            this.advertisement = new Advertisement();
+            this.advertisement.setBeenPlayed(true);
+        }
+
+    }
+    public void addSongToAd (Song song) {
+        ArrayList<Song> songs = advertisement.getSongsBetween();
+        songs.add(song);
+        advertisement.setSongsBetween(songs);
+    }
+    public void distributeMoney (ArrayList<Song> songs) {
+
     }
 }

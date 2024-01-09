@@ -14,6 +14,7 @@ public final class Song extends AudioFile {
     private final Integer releaseYear;
     private final String artist;
     private Integer likes;
+    private double revenue;
 
     public Song() {
         super("", 0, "song"); // Call to the superclass default constructor
@@ -24,6 +25,7 @@ public final class Song extends AudioFile {
         this.releaseYear = 0;
         this.artist = "";
         this.likes = 0;
+        this.revenue = 0;
     }
 
     public Song(final String name, final Integer duration, final String album,
@@ -137,5 +139,11 @@ public final class Song extends AudioFile {
      */
     public void dislike() {
         likes--;
+    }
+    public void updateRevenue(double newRevenue) {
+        this.revenue += newRevenue;
+    }
+    public void resetRevenue() {
+        this.revenue = 0;
     }
 }

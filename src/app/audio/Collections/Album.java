@@ -66,4 +66,19 @@ public class Album extends AudioCollection {
         }
         return followers;
     }
+    public Integer getIndexOfTrack(final Song song) {
+        return songs.indexOf(song);
+    }
+    public void addSongAtIndex(Integer index, Song song) {
+        songs.add(index + 1, song);
+    }
+    public boolean containsSong(final Song song) {
+        return songs.contains(song);
+    }
+    public void removeSong (final Song song) {
+        songs.remove(song);
+    }
+    public void removeSong(final int index) {
+        songs.remove(index);
+    }
 }

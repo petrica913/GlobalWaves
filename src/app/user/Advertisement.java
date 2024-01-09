@@ -4,6 +4,7 @@ import app.audio.Files.Song;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Advertisement {
@@ -12,9 +13,16 @@ public class Advertisement {
     private Integer timestamp;
     @Setter
     @Getter
-    private List<Song> songsBetween;
-    public Advertisement(final Integer timestamp) {
-        this.timestamp = timestamp;
-        this.songsBetween = null;
+    private ArrayList<Song> songsBetween;
+    @Setter
+    @Getter
+    private Song ad;
+    @Getter
+    @Setter
+    private boolean beenPlayed;
+    public Advertisement() {
+        this.songsBetween = new ArrayList<>();
+        this.beenPlayed = false;
+        this.ad = new Song();
     }
 }

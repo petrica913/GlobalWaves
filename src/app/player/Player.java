@@ -1,6 +1,7 @@
 package app.player;
 
 import app.Admin;
+import app.audio.Collections.Album;
 import app.audio.Collections.AudioCollection;
 import app.audio.Collections.Playlist;
 import app.audio.Files.AudioFile;
@@ -8,8 +9,10 @@ import app.audio.LibraryEntry;
 import app.audio.Files.Song;
 import app.audio.Files.Episode;
 import app.user.Artist;
+import app.user.User;
 import app.utils.Enums;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,9 @@ public class Player {
     private ArrayList<Song> topSongs = new ArrayList<>();
     @Getter
     private ArrayList<Episode> topEpisodes = new ArrayList<>();
+    @Getter
+    @Setter
+    private User owner;
 
     public Player() {
         this.repeatMode = Enums.RepeatMode.NO_REPEAT;
@@ -198,10 +204,48 @@ public class Player {
                         Integer listeners = artist.getListeners();
                         listeners++;
                         artist.setListeners(listeners);
+                        if (owner.getType() == null) {
+                            owner.setType("user");
+                        }
+                        if (owner.getType().equals("user") && owner.getCredits() != 0) {
+                            ArrayList<Song> premiumSongs = owner.getPremiumSongs();
+                            premiumSongs.add((Song) this.getCurrentAudioFile());
+                            owner.setPremiumSongs(premiumSongs);
+                        }
+                        if (owner.getType().equals("user") && owner.getCredits() == 0) {
+                            owner.addSongToAd((Song) this.getCurrentAudioFile());
+                        }
+                        // aici vezi daca indexu din audiocollection al sourcei e mai mare decat ad-u
+                        Song ad = owner.getAdvertisement().getAd();
+                        if (source.getAudioFile().getName().equals(ad.getName())) {
+                            owner.getAdvertisement().setBeenPlayed(true);
+                        }
+                        Song currentSong = (Song) source.getAudioFile();
+                        if (source.getAudioCollection().equals("playlist")
+                                && owner.getAdvertisement().isBeenPlayed()) {
+                            Playlist playlist = (Playlist) source.getAudioCollection();
+                            Integer currentIndex = playlist.getIndexOfTrack(currentSong);
+                            Integer adIndex = playlist.getIndexOfTrack(owner.getAdvertisement().getAd());
+                            if (currentIndex > adIndex && owner.getAdvertisement().isBeenPlayed()) {
+                                playlist.removeSong(adIndex);
+                                // proceed with money distribution
+                            }
+                        }
+                        if (source.getAudioCollection().equals("album")
+                                && owner.getAdvertisement().isBeenPlayed()) {
+                            Album album = (Album) source.getAudioCollection();
+                            Integer currentIndex = album.getIndexOfTrack(currentSong);
+                            Integer adIndex = album.getIndexOfTrack(owner.getAdvertisement().getAd());
+                            if (currentIndex > adIndex && owner.getAdvertisement().isBeenPlayed()) {
+                                album.removeSong(adIndex);
+                                // proceed with money distribution
+                            }
+                        }
                     }
                     if (source.getAudioFile().getType().equals("episode")) {
                         topEpisodes.add((Episode) this.getCurrentAudioFile());
                     }
+
                 }
                 if (paused) {
                     break;

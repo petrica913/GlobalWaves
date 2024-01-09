@@ -144,5 +144,10 @@ public final class Playlist extends AudioCollection {
     public void removeSongs(final List<Song> songsToRemove) {
         songs.removeAll(songsToRemove);
     }
-
+    public Integer getIndexOfTrack(final Song song) {
+        return songs.indexOf(song);
+    }
+    public void addSongAtIndex(Integer index, Song song) {
+        songs.add(index + 1, song);
+    }
 }

@@ -4,6 +4,7 @@ import app.audio.Collections.AudioCollection;
 import app.audio.Files.AudioFile;
 import app.utils.Enums;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +15,7 @@ public class PlayerSource {
     @Getter
     private Enums.PlayerSourceType type;
     @Getter
+    @Setter
     private AudioCollection audioCollection;
     @Getter
     private AudioFile audioFile;

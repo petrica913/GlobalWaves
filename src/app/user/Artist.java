@@ -1,6 +1,8 @@
 package app.user;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 
 import app.Admin;
 import app.audio.Collections.Album;
@@ -42,6 +44,9 @@ public class Artist extends User {
     @Setter
     @Getter
     private Integer order;
+    @Setter
+    @Getter
+    private ArrayList<Song> profitableSongs;
 
     public Artist(final String username, final int age, final String city) {
         super(username, age, city);
@@ -53,6 +58,7 @@ public class Artist extends User {
         merchRevenue = 0;
         ranking = 1;
         mostProfitableSong = "N/A";
+        profitableSongs = new ArrayList<>();
     }
 
     /**
@@ -192,7 +198,19 @@ public class Artist extends User {
         this.likes = likes;
     }
     public void updateSongRevenue(Integer totalSongs, Integer artistSongs) {
-        this.songRevenue = this.songRevenue + (double) (1000000 / totalSongs * artistSongs);
-//        this.songRevenue = Math.round(this.songRevenue * 100.0) / 100.0;
+        this.songRevenue = this.songRevenue + (double) (1000000 * artistSongs) / totalSongs;
+    }
+    public void addProfitableSong(final Song song) {
+        this.profitableSongs.add(song);
+    }
+    public void setMostProfitableSong(Song song) {
+        if (!profitableSongs.isEmpty()) {
+//            ArrayList<Song> sorted = profitableSongs;
+//            sorted.sort(Comparator.comparingDouble(Song::getRevenue).reversed());
+//            Song mostProfitable = sorted.get(0);
+            this.mostProfitableSong = song.getName();
+        } else {
+            this.mostProfitableSong = "N/A";
+        }
     }
 }
