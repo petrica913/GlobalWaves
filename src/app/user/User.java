@@ -11,6 +11,7 @@ import app.audio.Files.Episode;
 import app.audio.Files.Song;
 import app.audio.LibraryEntry;
 import app.player.Player;
+import app.player.PlayerSource;
 import app.player.PlayerStats;
 import app.searchBar.Filters;
 import app.searchBar.SearchBar;
@@ -166,7 +167,20 @@ public class User {
                 && ((AudioCollection) searchBar.getLastSelected()).getNumberOfTracks() == 0) {
             return "You can't load an empty audio collection!";
         }
-
+        if (player.getSource() != null) {
+            if (player.getSource().getAudioCollection() != null) {
+                if (player.getSource().getAudioCollection().getType().equals("playlist")) {
+                    Playlist playlist = (Playlist) player.getSource().getAudioCollection();
+                    Integer adIndex = playlist.getIndexOfTrack(this.getAdvertisement().getAd());
+                    playlist.removeSong(adIndex);
+                }
+                if (player.getSource().getAudioCollection().getType().equals("album")) {
+                    Album album = (Album) player.getSource().getAudioCollection();
+                    Integer adIndex = album.getIndexOfTrack(this.getAdvertisement().getAd());
+                    album.removeSong(adIndex);
+                }
+            }
+        }
         player.setSource(searchBar.getLastSelected(), searchBar.getLastSearchType());
         searchBar.clearSelection();
 
@@ -950,10 +964,12 @@ public class User {
             Playlist playlist = new Playlist("adPlaylist", this.username);
             playlist.addSong((Song) this.player.getSource().getAudioFile());
             playlist.addSong(ad);
-            this.player.getSource().setAudioCollection(playlist);
+            Integer remainedTime = player.getSource().getRemainedDuration();
+            PlayerSource source = this.player.getSource();
+            source.setAudioCollection(playlist);
+            this.player.setSource(source);
+            this.player.sourceTime(remainedTime);
             this.advertisement.setAd(ad);
-            this.advertisement = new Advertisement();
-            this.advertisement.setBeenPlayed(true);
             return;
         }
         if (this.player.getSource().getAudioCollection().getType().equals("playlist")) {
@@ -963,9 +979,10 @@ public class User {
                 int currentIndex = playlist.getIndexOfTrack(currentSong);
                 playlist.addSongAtIndex(currentIndex + 1, ad);
             }
+            PlayerSource source = this.player.getSource();
+            source.setAudioCollection(playlist);
+            this.player.setSource(source);
             this.advertisement.setAd(ad);
-            this.advertisement = new Advertisement();
-            this.advertisement.setBeenPlayed(true);
             return;
         }
         if (this.player.getSource().getAudioCollection().getType().equals("album")) {
@@ -975,9 +992,10 @@ public class User {
                 int currentIndex = album.getIndexOfTrack(currentSong);
                 album.addSongAtIndex(currentIndex + 1, ad);
             }
+            PlayerSource source = this.player.getSource();
+            source.setAudioCollection(album);
+            this.player.setSource(source);
             this.advertisement.setAd(ad);
-            this.advertisement = new Advertisement();
-            this.advertisement.setBeenPlayed(true);
         }
 
     }
@@ -987,6 +1005,20 @@ public class User {
         advertisement.setSongsBetween(songs);
     }
     public void distributeMoney (ArrayList<Song> songs) {
-
+        Map<String, Integer> artistListens = new HashMap<>();
+        Map<String, Integer> songListens = new HashMap<>();
+        for (Song song : songs) {
+            String artistName = song.getArtist();
+            String songName = song.getName();
+            artistListens.put(artistName, artistListens.getOrDefault(artistName, 0) + 1);
+            songListens.put(songName, songListens.getOrDefault(songName, 0) + 1);
+        }
+        Integer totalListens = songs.size();
+        for (Map.Entry<String, Integer> entry : artistListens.entrySet()) {
+            String artist = entry.getKey();
+            Integer listens = entry.getValue();
+            Artist artist1 = (Artist) Admin.getUser(artist);
+            artist1.updateSongRevenueFree(totalListens, listens);
+        }
     }
 }

@@ -70,7 +70,11 @@ public class Album extends AudioCollection {
         return songs.indexOf(song);
     }
     public void addSongAtIndex(Integer index, Song song) {
-        songs.add(index + 1, song);
+        if (index >= 0 && index <= songs.size()) {
+            songs.add(index, song);
+        } else {
+            songs.add(song);
+        }
     }
     public boolean containsSong(final Song song) {
         return songs.contains(song);

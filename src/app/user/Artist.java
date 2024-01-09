@@ -205,12 +205,12 @@ public class Artist extends User {
     }
     public void setMostProfitableSong(Song song) {
         if (!profitableSongs.isEmpty()) {
-//            ArrayList<Song> sorted = profitableSongs;
-//            sorted.sort(Comparator.comparingDouble(Song::getRevenue).reversed());
-//            Song mostProfitable = sorted.get(0);
             this.mostProfitableSong = song.getName();
         } else {
             this.mostProfitableSong = "N/A";
         }
+    }
+    public void updateSongRevenueFree(Integer totalSongs, Integer artistSongs) {
+        this.songRevenue = this.songRevenue + (double) (500 * artistSongs) / totalSongs;
     }
 }

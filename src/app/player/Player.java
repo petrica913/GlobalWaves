@@ -8,6 +8,7 @@ import app.audio.Files.AudioFile;
 import app.audio.LibraryEntry;
 import app.audio.Files.Song;
 import app.audio.Files.Episode;
+import app.user.Advertisement;
 import app.user.Artist;
 import app.user.User;
 import app.utils.Enums;
@@ -21,8 +22,10 @@ public class Player {
     private Enums.RepeatMode repeatMode;
     private boolean shuffle;
     private boolean paused;
+    @Setter
     @Getter
     private PlayerSource source;
+    @Setter
     @Getter
     private String type;
     private static final int PODCAST_BACKWARD = 90;
@@ -199,11 +202,12 @@ public class Player {
                         topSongs.add((Song) this.getCurrentAudioFile());
                         String artistName = ((Song) source.getAudioFile()).getArtist();
                         Artist artist = (Artist) Admin.getUser(artistName);
-                        assert artist != null;
-                        artist.setPlay(true);
-                        Integer listeners = artist.getListeners();
-                        listeners++;
-                        artist.setListeners(listeners);
+                        if (artist != null) {
+                            artist.setPlay(true);
+                            Integer listeners = artist.getListeners();
+                            listeners++;
+                            artist.setListeners(listeners);
+                        }
                         if (owner.getType() == null) {
                             owner.setType("user");
                         }
@@ -228,7 +232,8 @@ public class Player {
                             Integer adIndex = playlist.getIndexOfTrack(owner.getAdvertisement().getAd());
                             if (currentIndex > adIndex && owner.getAdvertisement().isBeenPlayed()) {
                                 playlist.removeSong(adIndex);
-                                // proceed with money distribution
+                                owner.distributeMoney(owner.getAdvertisement().getSongsBetween());
+                                owner.setAdvertisement(new Advertisement());
                             }
                         }
                         if (source.getAudioCollection().equals("album")
@@ -238,7 +243,8 @@ public class Player {
                             Integer adIndex = album.getIndexOfTrack(owner.getAdvertisement().getAd());
                             if (currentIndex > adIndex && owner.getAdvertisement().isBeenPlayed()) {
                                 album.removeSong(adIndex);
-                                // proceed with money distribution
+                                owner.distributeMoney(owner.getAdvertisement().getSongsBetween());
+                                owner.setAdvertisement(new Advertisement());
                             }
                         }
                     }
@@ -347,5 +353,7 @@ public class Player {
 
         return new PlayerStats(filename, duration, repeatMode, shuffle, paused);
     }
-
+    public void sourceTime(Integer time) {
+        source.setRemainedDuration(time);
+    }
 }

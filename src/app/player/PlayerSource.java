@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 public class PlayerSource {
+    @Setter
     @Getter
     private Enums.PlayerSourceType type;
     @Getter
@@ -22,6 +23,7 @@ public class PlayerSource {
     @Getter
     private int index;
     private int indexShuffled;
+    @Setter
     @Getter
     private int remainedDuration;
     private final List<Integer> indices = new ArrayList<>();

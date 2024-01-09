@@ -858,7 +858,7 @@ public final class CommandRunner {
             } else if (!user.getPlayer().getSource().getAudioFile().getType().equals("song")) {
                 message = user.getUsername() + " is not playing any music.";
             } else {
-                message = user.getUsername() + "Ad inserted successfully.";
+                message = "Ad inserted successfully.";
                 user.adBreak(command.getTimestamp(), ad);
             }
         }
