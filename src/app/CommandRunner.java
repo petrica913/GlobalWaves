@@ -7,8 +7,11 @@ import app.audio.Files.Song;
 import app.player.PlayerStats;
 import app.searchBar.Filters;
 import app.user.Artist;
+import app.user.CommandSubscribe.SubscribeFunction;
 import app.user.Host;
 import app.user.User;
+import app.user.pages.ArtistPage;
+import app.user.pages.HostPage;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -844,7 +847,7 @@ public final class CommandRunner {
         objectNode.put("command", command.getCommand());
         objectNode.put("user", command.getUsername());
         objectNode.put("timestamp", command.getTimestamp());
-        User user = Admin.getUser(command.getUsername());
+        User user = Admin.getInstance().getUser(command.getUsername());
         SongInput adBreak = library.getSongs().getFirst();
         Song ad = new Song(adBreak.getName(), adBreak.getDuration(), adBreak.getAlbum() ,
                     adBreak.getTags(),adBreak.getLyrics(),adBreak.getGenre(),
@@ -865,4 +868,33 @@ public final class CommandRunner {
         objectNode.put("message", message);
         return  objectNode;
     }
-}
+    public static ObjectNode subscribe (CommandInput command) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
+        objectNode.put("timestamp", command.getTimestamp());
+        User user = Admin.getInstance().getUser(command.getUsername());
+        String message = null;
+        if (user == null) {
+            message = "The username " + command.getUsername() + " doesn't exist.";
+        } else if (user.getType() == null || user.getType().equals("user")) {
+            if (!user.getNextPage().type().equals("ArtistPage")
+                    && !user.getNextPage().type().equals("HostPage")) {
+                message = "To subscribe you need to be on the page of an artist or host.";
+                objectNode.put("message", message);
+                return objectNode;
+            }
+            User pageOwner = null;
+            if (user.getNextPage().type().equals("ArtistPage")) {
+                pageOwner = ((ArtistPage) user.getNextPage()).getUser();
+            } else {
+                pageOwner = ((HostPage) user.getNextPage()).getUser();
+            }
+            SubscribeFunction subscribeFunction = new SubscribeFunction(user, pageOwner);
+            message = subscribeFunction.execute();
+            objectNode.put("message", message);
+        }
+        return objectNode;
+    }
+
+    }

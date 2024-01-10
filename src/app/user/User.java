@@ -76,6 +76,8 @@ public class User {
     @Setter
     @Getter
     private ArrayList<Song> premiumSongs;
+    @Getter
+    private ArrayList<User> subscribers;
 
     public User(final String username, final int age, final String city) {
         this.username = username;
@@ -95,6 +97,7 @@ public class User {
         premiumSongs = new ArrayList<>();
         player.setOwner(this);
         advertisement = new Advertisement();
+        subscribers = new ArrayList<>();
     }
 
     /**
@@ -1019,6 +1022,13 @@ public class User {
             Integer listens = entry.getValue();
             Artist artist1 = (Artist) Admin.getUser(artist);
             artist1.updateSongRevenueFree(totalListens, listens);
+        }
+    }
+    public void subscribe(User user) {
+        if (!subscribers.contains(user)) {
+            subscribers.add(user);
+        } else {
+            subscribers.remove(user);
         }
     }
 }
