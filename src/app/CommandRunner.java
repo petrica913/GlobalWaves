@@ -683,9 +683,9 @@ public final class CommandRunner {
             message = commandInput.getUsername() + " is not an artist.";
         }
         objectNode.put("command", commandInput.getCommand());
-        objectNode.put("message", message);
-        objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
         return objectNode;
     }
     /**
