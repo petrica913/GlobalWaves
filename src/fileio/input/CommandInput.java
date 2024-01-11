@@ -46,6 +46,8 @@ public final class CommandInput {
     private Integer price;
     @lombok.Getter
     private String nextPage;
+    @lombok.Getter
+    private String recommendationType;
     public CommandInput() {
     }
 
@@ -127,6 +129,10 @@ public final class CommandInput {
 
     public void setNextPage(final String nextPage) {
         this.nextPage = nextPage;
+    }
+
+    public void setRecommendationType(String recommendationType) {
+        this.recommendationType = recommendationType;
     }
 
     @Override

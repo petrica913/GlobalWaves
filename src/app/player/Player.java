@@ -199,6 +199,11 @@ public class Player {
                 next();
                 if (source != null){
                     if (source.getAudioFile().getType().equals("song") && source.getAudioCollection() != null) {
+                        Song song = (Song) this.getSource().getAudioFile();
+                        Artist artist1 = (Artist) Admin.getInstance().getUser(song.getArtist());
+                        if (artist1 != null) {
+                            artist1.setPlay(true);
+                        }
                         topSongs.add((Song) this.getCurrentAudioFile());
                         String artistName = ((Song) source.getAudioFile()).getArtist();
                         Artist artist = (Artist) Admin.getUser(artistName);

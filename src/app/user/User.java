@@ -29,6 +29,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class User {
     @Getter
@@ -81,7 +82,10 @@ public class User {
     private ArrayList<Notification> notifications;
     @Getter
     private ArrayList<Merch> myMerch;
-
+    @Getter
+    private Song recommendedSong;
+    @Getter
+    private Playlist recommendedPlaylist;
     public User(final String username, final int age, final String city) {
         this.username = username;
         this.age = age;
@@ -103,6 +107,8 @@ public class User {
         subscribers = new ArrayList<>();
         notifications = new ArrayList<>();
         myMerch = new ArrayList<>();
+        recommendedSong = new Song();
+        recommendedPlaylist = new Playlist("", "");
     }
 
     /**
@@ -193,6 +199,9 @@ public class User {
         searchBar.clearSelection();
 
         if (player.getSource().getAudioFile().getType().equals("song")) {
+            Song song = (Song) player.getSource().getAudioFile();
+            Artist artist = (Artist) Admin.getInstance().getUser(song.getArtist());
+            artist.setPlay(true);
             topSongs.add((Song) player.getSource().getAudioFile());
             Integer listeners = this.getListeners();
             listeners++;
@@ -1075,5 +1084,123 @@ public class User {
             message = "The merch " + merchName + " doesn't exist.";
         }
         return message;
+    }
+    public String updateRecom(String type) {
+        String message = null;
+//        this.resetRecom();
+        if (type.equals("random_song")) {
+            if (this.player.getSource().getRemainedDuration() > 30) {
+                Integer seed = this.player.getSource().getRemainedDuration();
+                Admin admin = Admin.getInstance();
+                Song currentSong = (Song) this.player.getSource().getAudioFile();
+                seed = currentSong.getDuration() - seed;
+                Random random = new Random(seed);
+                String currentGenre = currentSong.getGenre();
+                List<Song> adminSongs = admin.getSongs();
+                List<Song> songs = new ArrayList<>();
+                for (Song song : adminSongs) {
+                    if (song.getGenre().equals(currentGenre) && !songs.contains(song)) {
+                        songs.add(song);
+                    }
+                }
+                int randomIndex = random.nextInt(songs.size());
+                this.recommendedSong = songs.get(randomIndex);
+                message = "The recommendations for user " + username
+                        + " have been updated successfully.";
+            }
+        } else if (type.equals("random_playlist")) {
+            Playlist playlist = this.createRandomPlaylist();
+            this.recommendedPlaylist = playlist;
+            message = "The recommendations for user " + username
+                    + " have been updated successfully.";
+        } else if (type.equals("fans_playlist")) {
+
+        }
+        return message;
+    }
+    public void resetRecom() {
+        this.recommendedSong = new Song();
+        this.recommendedPlaylist = new Playlist("", "");
+    }
+    public Playlist createRandomPlaylist() {
+        ArrayList<Song> listOfSongs = new ArrayList<>();
+        listOfSongs.addAll(this.getLikedSongs());
+        for (Playlist playlist : this.playlists) {
+            listOfSongs.addAll(playlist.getSongs());
+        }
+        for (Playlist playlist : this.getFollowedPlaylists()) {
+            listOfSongs.addAll(playlist.getSongs());
+        }
+
+        Map<Song, Integer> songCountMap = new HashMap<>();
+        Map<String, Integer> genreCountMap = new HashMap<>();
+        for (Song song : listOfSongs) {
+            songCountMap.put(song, songCountMap.getOrDefault(song, 0) + 1);
+            genreCountMap.put(song.getGenre(),
+                    genreCountMap.getOrDefault(song.getGenre(), 0) + 1);
+        }
+        List<Map.Entry<String, Integer>> sortedGenreList = genreCountMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .collect(Collectors.toList());
+        String genre1 = new String(), genre2 = new String(), genre3 = new String();
+        if (sortedGenreList.size() > 0) {
+            genre1 = sortedGenreList.get(0).getKey();
+        }
+        if (sortedGenreList.size() > 1) {
+            genre2 = sortedGenreList.get(1).getKey();
+        }
+        if (sortedGenreList.size() > 2) {
+            genre3 = sortedGenreList.get(2).getKey();
+        }
+        ArrayList<Song> genre1Songs = new ArrayList<>();
+        ArrayList<Song> genre2Songs = new ArrayList<>();
+        ArrayList<Song> genre3Songs = new ArrayList<>();
+
+        for (Song song : listOfSongs) {
+            if (song.getGenre().equals(genre1) && !genre1Songs.contains(song)) {
+                genre1Songs.add(song);
+            }
+            if (song.getGenre().equals(genre2) && !genre2Songs.contains(song)) {
+                genre2Songs.add(song);
+            }
+            if (song.getGenre().equals(genre3) && !genre3Songs.contains(song)) {
+                genre3Songs.add(song);
+            }
+        }
+        Map<Song, Integer> genre1Map = genreMap(genre1Songs);
+        Map<Song, Integer> genre2Map = genreMap(genre2Songs);
+        Map<Song, Integer> genre3Map = genreMap(genre3Songs);
+        Playlist playlist = new Playlist(username + "'s recommendations", username);
+        addTopSongsToPlaylist(genre1Map, playlist, 5);
+        addTopSongsToPlaylist(genre2Map, playlist, 3);
+        addTopSongsToPlaylist(genre3Map, playlist, 2);
+        return playlist;
+    }
+    private void addTopSongsToPlaylist(Map<Song, Integer> songMap, Playlist playlist, int topCount) {
+        int count = 0;
+        for (Map.Entry<Song, Integer> entry : songMap.entrySet()) {
+            playlist.addSong(entry.getKey());
+            count++;
+            if (count == topCount) {
+                break;
+            }
+        }
+    }
+
+    private Map<Song, Integer> genreMap (ArrayList<Song> songs) {
+        Map<Song, Integer> songLikesMap = new HashMap<>();
+        for (Song song : songs) {
+            songLikesMap.put(song, song.getLikes());
+        }
+        return songLikesMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.<Song, Integer>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
     }
 }

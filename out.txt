@@ -1,349 +1,127 @@
 [ {
   "command" : "addUser",
-  "user" : "The Beatles",
-  "timestamp" : 1,
-  "message" : "The username The Beatles has been added successfully."
+  "user" : "Whitney Houston",
+  "timestamp" : 10,
+  "message" : "The username Whitney Houston has been added successfully."
 }, {
-  "command" : "addUser",
-  "user" : "Michael Jackson",
-  "timestamp" : 1,
-  "message" : "The username Michael Jackson has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Nothing But Thieves",
-  "timestamp" : 1,
-  "message" : "The username Nothing But Thieves has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Bob Dylan",
-  "timestamp" : 1,
-  "message" : "The username Bob Dylan has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Madonna",
-  "timestamp" : 1,
-  "message" : "The username Madonna has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Queen",
-  "timestamp" : 1,
-  "message" : "The username Queen has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "The Rolling Stones",
-  "timestamp" : 1,
-  "message" : "The username The Rolling Stones has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "David Bowie",
-  "timestamp" : 1,
-  "message" : "The username David Bowie has been added successfully."
+  "command" : "addAlbum",
+  "user" : "Whitney Houston",
+  "timestamp" : 15,
+  "message" : "Whitney Houston has added new album successfully."
 }, {
   "command" : "addUser",
   "user" : "Prince",
-  "timestamp" : 1,
+  "timestamp" : 20,
   "message" : "The username Prince has been added successfully."
 }, {
-  "command" : "addUser",
-  "user" : "Whitney Houston",
-  "timestamp" : 1,
-  "message" : "The username Whitney Houston has been added successfully."
+  "command" : "addAlbum",
+  "user" : "Prince",
+  "timestamp" : 25,
+  "message" : "Prince has added new album successfully."
 }, {
   "command" : "addUser",
-  "user" : "Elton John",
-  "timestamp" : 1,
-  "message" : "The username Elton John has been added successfully."
+  "user" : "morningstar",
+  "timestamp" : 35,
+  "message" : "The username morningstar has been added successfully."
 }, {
   "command" : "addUser",
-  "user" : "Led Zeppelin",
-  "timestamp" : 1,
-  "message" : "The username Led Zeppelin has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Stevie Wonder",
-  "timestamp" : 1,
-  "message" : "The username Stevie Wonder has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "BeyoncÃ©",
-  "timestamp" : 1,
-  "message" : "The username BeyoncÃ© has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Pink Floyd",
-  "timestamp" : 1,
-  "message" : "The username Pink Floyd has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "U2",
-  "timestamp" : 1,
-  "message" : "The username U2 has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "The Beach Boys",
-  "timestamp" : 1,
-  "message" : "The username The Beach Boys has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Frank Sinatra",
-  "timestamp" : 1,
-  "message" : "The username Frank Sinatra has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Johnny Cash",
-  "timestamp" : 1,
-  "message" : "The username Johnny Cash has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Adele",
-  "timestamp" : 1,
-  "message" : "The username Adele has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Bruce Springsteen",
-  "timestamp" : 1,
-  "message" : "The username Bruce Springsteen has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Jimi Hendrix",
-  "timestamp" : 1,
-  "message" : "The username Jimi Hendrix has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Nirvana",
-  "timestamp" : 1,
-  "message" : "The username Nirvana has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Dire Straits",
-  "timestamp" : 1,
-  "message" : "The username Dire Straits has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Imagine Dragons",
-  "timestamp" : 1,
-  "message" : "The username Imagine Dragons has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Eminem",
-  "timestamp" : 1,
-  "message" : "The username Eminem has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "ABBA",
-  "timestamp" : 1,
-  "message" : "The username ABBA has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Ray Charles",
-  "timestamp" : 1,
-  "message" : "The username Ray Charles has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "The Eagles",
-  "timestamp" : 1,
-  "message" : "The username The Eagles has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Bob Marley",
-  "timestamp" : 1,
-  "message" : "The username Bob Marley has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Taylor Swift",
-  "timestamp" : 1,
-  "message" : "The username Taylor Swift has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Aretha Franklin",
-  "timestamp" : 1,
-  "message" : "The username Aretha Franklin has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "The Who",
-  "timestamp" : 1,
-  "message" : "The username The Who has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Rihanna",
-  "timestamp" : 1,
-  "message" : "The username Rihanna has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Marvin Gaye",
-  "timestamp" : 1,
-  "message" : "The username Marvin Gaye has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Fleetwood Mac",
-  "timestamp" : 1,
-  "message" : "The username Fleetwood Mac has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "James Brown",
-  "timestamp" : 1,
-  "message" : "The username James Brown has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Radiohead",
-  "timestamp" : 1,
-  "message" : "The username Radiohead has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "The Doors",
-  "timestamp" : 1,
-  "message" : "The username The Doors has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Jay-Z",
-  "timestamp" : 1,
-  "message" : "The username Jay-Z has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Eric Clapton",
-  "timestamp" : 1,
-  "message" : "The username Eric Clapton has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Joni Mitchell",
-  "timestamp" : 1,
-  "message" : "The username Joni Mitchell has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "Chuck Berry",
-  "timestamp" : 1,
-  "message" : "The username Chuck Berry has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "The Police",
-  "timestamp" : 1,
-  "message" : "The username The Police has been added successfully."
-}, {
-  "command" : "addMerch",
-  "user" : "Elton John",
-  "timestamp" : 1699,
-  "message" : "Elton John has added new merchandise successfully."
+  "user" : "joe27",
+  "timestamp" : 45,
+  "message" : "The username joe27 has been added successfully."
 }, {
   "command" : "search",
-  "user" : "emily30",
-  "timestamp" : 2137,
+  "user" : "morningstar",
+  "timestamp" : 55,
   "message" : "Search returned 1 results",
-  "results" : [ "Nothing But Thieves" ]
+  "results" : [ "Nobody Loves Me Like You Do" ]
 }, {
   "command" : "select",
-  "user" : "emily30",
-  "timestamp" : 2137,
-  "message" : "Successfully selected Nothing But Thieves's page."
+  "user" : "morningstar",
+  "timestamp" : 60,
+  "message" : "Successfully selected Nobody Loves Me Like You Do."
 }, {
-  "command" : "buyMerch",
-  "user" : "emily30",
-  "timestamp" : 2137,
-  "message" : "The merch Nothing But Thieves Vinyl Record doesn't exist."
+  "command" : "load",
+  "user" : "morningstar",
+  "timestamp" : 65,
+  "message" : "Playback loaded successfully."
+}, {
+  "command" : "status",
+  "user" : "morningstar",
+  "timestamp" : 70,
+  "stats" : {
+    "name" : "Nobody Loves Me Like You Do",
+    "remainedTime" : 221,
+    "repeat" : "No Repeat",
+    "shuffle" : false,
+    "paused" : false
+  }
+}, {
+  "command" : "createPlaylist",
+  "user" : "morningstar",
+  "timestamp" : 75,
+  "message" : "Playlist created successfully."
+}, {
+  "command" : "addRemoveInPlaylist",
+  "user" : "morningstar",
+  "timestamp" : 85,
+  "message" : "Successfully added to playlist."
+}, {
+  "command" : "showPlaylists",
+  "user" : "morningstar",
+  "timestamp" : 90,
+  "result" : [ {
+    "name" : "playlist1",
+    "songs" : [ "Nobody Loves Me Like You Do" ],
+    "visibility" : "public",
+    "followers" : 0
+  } ]
+}, {
+  "command" : "updateRecommendations",
+  "user" : "morningstar",
+  "timestamp" : 95,
+  "message" : "The recommendations for user morningstar have been updated successfully."
 }, {
   "command" : "search",
-  "user" : "david27",
-  "timestamp" : 2271,
+  "user" : "morningstar",
+  "timestamp" : 105,
   "message" : "Search returned 1 results",
-  "results" : [ "Whitney Houston" ]
+  "results" : [ "Purple Rain" ]
 }, {
   "command" : "select",
-  "user" : "david27",
-  "timestamp" : 2271,
-  "message" : "Successfully selected Whitney Houston's page."
+  "user" : "morningstar",
+  "timestamp" : 110,
+  "message" : "Successfully selected Purple Rain."
 }, {
-  "command" : "buyMerch",
-  "user" : "david27",
-  "timestamp" : 2271,
-  "message" : "The merch Whitney Houston Album doesn't exist."
+  "command" : "load",
+  "user" : "morningstar",
+  "timestamp" : 115,
+  "message" : "Playback loaded successfully."
 }, {
-  "command" : "addMerch",
-  "user" : "Led Zeppelin",
-  "timestamp" : 2888,
-  "message" : "Led Zeppelin has added new merchandise successfully."
+  "command" : "like",
+  "user" : "morningstar",
+  "timestamp" : 120,
+  "message" : "Like registered successfully."
 }, {
-  "command" : "search",
-  "user" : "grace25",
-  "timestamp" : 3155,
-  "message" : "Search returned 1 results",
-  "results" : [ "Nothing But Thieves" ]
+  "command" : "updateRecommendations",
+  "user" : "morningstar",
+  "timestamp" : 125,
+  "message" : "The recommendations for user morningstar have been updated successfully."
 }, {
-  "command" : "select",
-  "user" : "grace25",
-  "timestamp" : 3155,
-  "message" : "Successfully selected Nothing But Thieves's page."
-}, {
-  "command" : "buyMerch",
-  "user" : "grace25",
-  "timestamp" : 3155,
-  "message" : "The merch Nothing But Thieves Vinyl Record doesn't exist."
-}, {
-  "command" : "addMerch",
-  "user" : "Nothing But Thieves",
-  "timestamp" : 4175,
-  "message" : "Nothing But Thieves has added new merchandise successfully."
-}, {
-  "command" : "addMerch",
-  "user" : "Madonna",
-  "timestamp" : 4553,
-  "message" : "Madonna has added new merchandise successfully."
-}, {
-  "command" : "addMerch",
-  "user" : "Whitney Houston",
-  "timestamp" : 4563,
-  "message" : "Whitney Houston has added new merchandise successfully."
-}, {
-  "command" : "search",
-  "user" : "jack29",
-  "timestamp" : 4721,
-  "message" : "Search returned 1 results",
-  "results" : [ "Elton John" ]
-}, {
-  "command" : "select",
-  "user" : "jack29",
-  "timestamp" : 4721,
-  "message" : "Successfully selected Elton John's page."
-}, {
-  "command" : "buyMerch",
-  "user" : "jack29",
-  "timestamp" : 4721,
-  "message" : "jack29 has added new merch successfully."
-}, {
-  "command" : "addMerch",
-  "user" : "Bruce Springsteen",
-  "timestamp" : 6557,
-  "message" : "Bruce Springsteen has added new merchandise successfully."
-}, {
-  "command" : "addMerch",
-  "user" : "Nirvana",
-  "timestamp" : 8385,
-  "message" : "Nirvana has added new merchandise successfully."
-}, {
-  "command" : "search",
-  "user" : "alice22",
-  "timestamp" : 9720,
-  "message" : "Search returned 1 results",
-  "results" : [ "Nothing But Thieves" ]
-}, {
-  "command" : "select",
-  "user" : "alice22",
-  "timestamp" : 9720,
-  "message" : "Successfully selected Nothing But Thieves's page."
-}, {
-  "command" : "buyMerch",
-  "user" : "alice22",
-  "timestamp" : 9720,
-  "message" : "alice22 has added new merch successfully."
+  "user" : "morningstar",
+  "command" : "printCurrentPage",
+  "timestamp" : 135,
+  "message" : "Liked songs:\n\t[Purple Rain]\n\nFollowed playlists:\n\t[]\n\nSong recommendations:\n\t[All at Once]\n\nPlaylists recommendations:\n\t[morningstar's recommendations]"
 }, {
   "command" : "endProgram",
   "result" : {
-    "Nothing But Thieves" : {
-      "merchRevenue" : 2500.0,
+    "Prince" : {
+      "merchRevenue" : 0.0,
       "songRevenue" : 0.0,
       "ranking" : 1,
       "mostProfitableSong" : "N/A"
     },
-    "Elton John" : {
-      "merchRevenue" : 1400.0,
+    "Whitney Houston" : {
+      "merchRevenue" : 0.0,
       "songRevenue" : 0.0,
       "ranking" : 2,
       "mostProfitableSong" : "N/A"

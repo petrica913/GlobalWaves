@@ -7,6 +7,7 @@ import app.audio.Files.Song;
 import app.player.PlayerStats;
 import app.searchBar.Filters;
 import app.user.Artist;
+import app.user.Collections.Merch;
 import app.user.CommandSubscribe.SubscribeFunction;
 import app.user.Host;
 import app.user.Notification;
@@ -474,10 +475,11 @@ public final class CommandRunner {
         String message = Admin.getUser(commandInput.getUsername())
                 .changePage(commandInput.getNextPage());
         ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.put("command", commandInput.getCommand());
-        objectNode.put("message", message);
-        objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("user", commandInput.getUsername());
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
         return objectNode;
     }
     /**
@@ -491,9 +493,9 @@ public final class CommandRunner {
         if (!Admin.getUser(commandInput.getUsername()).isOnline()) {
             message = Admin.getUser(commandInput.getUsername()).getUsername() + " is offline.";
         }
+        objectNode.put("user", commandInput.getUsername());
         objectNode.put("command", commandInput.getCommand());
         objectNode.put("timestamp", commandInput.getTimestamp());
-        objectNode.put("user", commandInput.getUsername());
         objectNode.put("message", message);
         return objectNode;
     }
@@ -788,6 +790,10 @@ public final class CommandRunner {
             message = "No data to show for artist " + command.getUsername() + ".";
             objectNode.put("message", message);
         }
+        if (Admin.getUser(command.getUsername()).getType().equals("host") && stats == null) {
+            message = "No data to show for host " + command.getUsername() + ".";
+            objectNode.put("message", message);
+        }
         if (stats != null) {
             objectNode.set("result", stats);
         } else if (message == null) {
@@ -940,6 +946,43 @@ public final class CommandRunner {
                 pageOwner = ((ArtistPage) user.getNextPage()).getUser();
             }
             message = user.buyMerch(command.getName(), pageOwner);
+            objectNode.put("message", message);
+        }
+        return objectNode;
+    }
+    public static ObjectNode seeMerch (CommandInput command) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
+        objectNode.put("timestamp", command.getTimestamp());
+        User user = Admin.getInstance().getUser(command.getUsername());
+        String message = null;
+        if (user == null) {
+            message = "The username " + command.getUsername() + " doesn't exist.";
+            objectNode.put("message", message);
+            return objectNode;
+        } else if (user.getType() == null || user.getType().equals("user")) {
+            ArrayList<String> results = new ArrayList<>();
+            for (Merch merch : user.getMyMerch()) {
+                results.add(merch.getName());
+            }
+            objectNode.put("result", objectMapper.valueToTree(results));
+        }
+        return objectNode;
+    }
+    public static ObjectNode updateRecom (CommandInput command) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
+        objectNode.put("timestamp", command.getTimestamp());
+        User user = Admin.getInstance().getUser(command.getUsername());
+        String message = null;
+        if (user == null) {
+            message = "The username " + command.getUsername() + " doesn't exist.";
+            objectNode.put("message", message);
+            return objectNode;
+        } else if (user.getType() == null || user.getType().equals("user")) {
+            message = user.updateRecom(command.getRecommendationType());
             objectNode.put("message", message);
         }
         return objectNode;

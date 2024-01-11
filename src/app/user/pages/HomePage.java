@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import app.audio.Files.Song;
 import app.audio.LibraryEntry;
 import app.user.User;
 import app.audio.Collections.Playlist;
@@ -23,9 +24,13 @@ public class HomePage implements Page {
      */
     @Override
     public String display() {
-        return "Liked songs:\n\t" + displayRecommendedSongs()
+        return "Liked songs:\n\t" + displayLikedSongs()
                 + "\n\n" + "Followed playlists:\n\t"
-                + displayTopFollowedPlaylists();
+                + displayTopFollowedPlaylists()
+                + "\n\n" + "Song recommendations:\n\t"
+                + displayRecommendedSongs()
+                + "\n\n" + "Playlists recommendations:\n\t"
+                + displayRecommendedPlaylist();
     }
 
     /**
@@ -40,7 +45,7 @@ public class HomePage implements Page {
      * Display recommended songs on the home page
      * @return songs
      */
-    private String displayRecommendedSongs() {
+    private String displayLikedSongs() {
         List<String> recommendedSongs = user.getLikedSongs().stream()
                 .sorted(Comparator.comparingInt(song -> -song.getLikes())).limit(MAGIC_NUMBER)
                 .map(LibraryEntry::getName)
@@ -64,5 +69,18 @@ public class HomePage implements Page {
         }
 
         return followedPlaylists.toString();
+    }
+    private String displayRecommendedSongs() {
+        return "[" + user.getRecommendedSong().getName() + "]";
+    }
+    private String displayRecommendedPlaylist() {
+//        ArrayList<Song> list = new ArrayList<>();
+//        list.addAll(user.getRecommendedPlaylist().getSongs());
+//        List<String> recommendedSongs = list.stream()
+//                .map(LibraryEntry::getName)
+//                .collect(Collectors.toList());
+//
+//        return recommendedSongs.toString();
+        return "[" + user.getRecommendedPlaylist().getName() + "]";
     }
 }
