@@ -138,6 +138,8 @@ public final class Main {
                 case "cancelPremium" -> outputs.add(CommandRunner.cancelPremium(command));
                 case "adBreak" -> outputs.add(CommandRunner.adBreak(command, library));
                 case "subscribe" -> outputs.add(CommandRunner.subscribe(command));
+                case "getNotifications" ->outputs.add(CommandRunner.getNotifications(command));
+                case "buyMerch" -> outputs.add(CommandRunner.buyMerch(command));
                 default -> System.out.println("Invalid command " + commandName);
             }
         }

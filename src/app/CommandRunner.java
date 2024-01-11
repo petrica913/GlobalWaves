@@ -9,11 +9,13 @@ import app.searchBar.Filters;
 import app.user.Artist;
 import app.user.CommandSubscribe.SubscribeFunction;
 import app.user.Host;
+import app.user.Notification;
 import app.user.User;
 import app.user.pages.ArtistPage;
 import app.user.pages.HostPage;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.input.CommandInput;
 import fileio.input.LibraryInput;
@@ -541,9 +543,10 @@ public final class CommandRunner {
             message = "The username " + commandInput.getUsername() + " doesn't exist.";
         }
         objectNode.put("command", commandInput.getCommand());
-        objectNode.put("message", message);
-        objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
         return objectNode;
     }
     /**
@@ -563,9 +566,9 @@ public final class CommandRunner {
             message = "The username " + commandInput.getUsername() + " doesn't exist.";
         }
         objectNode.put("command", commandInput.getCommand());
-        objectNode.put("message", message);
-        objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
         return objectNode;
     }
     /**
@@ -896,5 +899,49 @@ public final class CommandRunner {
         }
         return objectNode;
     }
-
+    public static ObjectNode getNotifications (CommandInput command) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
+        objectNode.put("timestamp", command.getTimestamp());
+        User user = Admin.getInstance().getUser(command.getUsername());
+        if (user != null) {
+            ArrayNode notificationsArray = objectNode.putArray("notifications");
+            if (user.getNotifications() == null) {
+                return objectNode;
+            }
+            for (Notification notification : user.getNotifications()) {
+                ObjectNode notificationNode = objectMapper.createObjectNode();
+                notificationNode.put("name", notification.getName());
+                notificationNode.put("description", notification.getDescription());
+                notificationsArray.add(notificationNode);
+            }
+            user.resetNotifications();
+        }
+        return objectNode;
     }
+    public static ObjectNode buyMerch (CommandInput command) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
+        objectNode.put("timestamp", command.getTimestamp());
+        User user = Admin.getInstance().getUser(command.getUsername());
+        String message = null;
+        if (user == null) {
+            message = "The username " + command.getUsername() + " doesn't exist.";
+        } else if (user.getType() == null || user.getType().equals("user")) {
+            if (!user.getNextPage().type().equals("ArtistPage")) {
+                message = "Cannot buy merch from this page.";
+                objectNode.put("message", message);
+                return objectNode;
+            }
+            User pageOwner = null;
+            if (user.getNextPage().type().equals("ArtistPage")) {
+                pageOwner = ((ArtistPage) user.getNextPage()).getUser();
+            }
+            message = user.buyMerch(command.getName(), pageOwner);
+            objectNode.put("message", message);
+        }
+        return objectNode;
+    }
+}

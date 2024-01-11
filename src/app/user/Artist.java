@@ -213,4 +213,8 @@ public class Artist extends User {
     public void updateSongRevenueFree(Integer totalSongs, Integer artistSongs) {
         this.songRevenue = this.songRevenue + (double) (500 * artistSongs) / totalSongs;
     }
+    public void updateMerchRevenue(Merch merch) {
+        this.merchRevenue += merch.getPrice();
+        this.boughtMerch = true;
+    }
 }

@@ -24,7 +24,6 @@ import app.user.pages.LikedContentPage;
 import app.user.Collections.Event;
 import app.user.Collections.Merch;
 import app.utils.Enums;
-import fileio.input.LibraryInput;
 import fileio.input.PodcastInput;
 import lombok.Getter;
 import lombok.Setter;
@@ -78,6 +77,10 @@ public class User {
     private ArrayList<Song> premiumSongs;
     @Getter
     private ArrayList<User> subscribers;
+    @Getter
+    private ArrayList<Notification> notifications;
+    @Getter
+    private ArrayList<Merch> myMerch;
 
     public User(final String username, final int age, final String city) {
         this.username = username;
@@ -98,6 +101,8 @@ public class User {
         player.setOwner(this);
         advertisement = new Advertisement();
         subscribers = new ArrayList<>();
+        notifications = new ArrayList<>();
+        myMerch = new ArrayList<>();
     }
 
     /**
@@ -691,6 +696,10 @@ public class User {
         count += 1;
         Admin.getInstance().setAlbumsCount(count);
         newAlbum.setOrder(count);
+        for (User subscriber : artist.getSubscribers()) {
+            Notification notification = new Notification("New Album", artist);
+            subscriber.addNotification(notification);
+        }
         return artist.addAlbum(newAlbum);
     }
 
@@ -727,6 +736,10 @@ public class User {
         }
 
         artist.addEvent(newEvent);
+        for (User subscriber : artist.getSubscribers()) {
+            Notification notification = new Notification("New Event", artist);
+            subscriber.addNotification(notification);
+        }
         return username + " has added new event successfully.";
     }
 
@@ -762,6 +775,10 @@ public class User {
 
         Merch newMerch = new Merch(merchName, description, price);
         artist.addMerch(newMerch);
+        for (User subscriber : artist.getSubscribers()) {
+            Notification notification = new Notification("New Merchandise", artist);
+            subscriber.addNotification(notification);
+        }
         return username + " has added new merchandise successfully.";
     }
 
@@ -1030,5 +1047,33 @@ public class User {
         } else {
             subscribers.remove(user);
         }
+    }
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
+    public void resetNotifications() {
+        this.notifications = new ArrayList<>();
+    }
+    public String buyMerch(String merchName, User pageOwner) {
+        String message = null;
+        Artist artist = null;
+        if (pageOwner != null) {
+            artist = (Artist) pageOwner;
+        }
+        if (artist == null) {
+            return null;
+        }
+        for (Merch merch : artist.getMerches()) {
+            if (merch.getName().equals(merchName)) {
+                artist.updateMerchRevenue(merch);
+                this.myMerch.add(merch);
+                message = username + " has added new merch successfully.";
+                break;
+            }
+        }
+        if (message == null) {
+            message = "The merch " + merchName + " doesn't exist.";
+        }
+        return message;
     }
 }

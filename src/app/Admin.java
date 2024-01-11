@@ -596,6 +596,7 @@ public final class Admin {
         ObjectNode result = objectMapper.createObjectNode();
 
         ArrayList<Artist> artistsList = new ArrayList<>();
+        ArrayList<Artist> copy = new ArrayList<>();
 
         for (User user : Admin.getInstance().getUsers()) {
             if (user.getType() == null || !user.getType().equals("artist")) {
@@ -605,11 +606,17 @@ public final class Admin {
             Artist artist = (Artist) user;
             artistsList.add(artist);
         }
-
+        copy = artistsList;
         artistsList.sort(Comparator
                 .comparing(Artist::getSongRevenue, Comparator.reverseOrder())
                 .thenComparing(Comparator.comparing(Artist::getUsername, Comparator.naturalOrder()))
         );
+        if (copy == artistsList) {
+            artistsList.sort(Comparator
+                    .comparing(Artist::getMerchRevenue, Comparator.reverseOrder())
+                    .thenComparing(Comparator.comparing(Artist::getUsername, Comparator.naturalOrder()))
+            );
+        }
 
         int count = 1;
 
