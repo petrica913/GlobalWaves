@@ -28,6 +28,7 @@ import fileio.input.PodcastInput;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.awt.print.PageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -86,6 +87,16 @@ public class User {
     private Song recommendedSong;
     @Getter
     private Playlist recommendedPlaylist;
+    @Getter
+    private ArrayList<Page> history;
+    @Getter
+    private Integer historyIndex;
+    @Getter
+    private ArrayList<Artist> artistsListenedTo;
+    @Getter
+    private LibraryEntry lastRecommended;
+    @Getter
+    private String lastRecomType;
     public User(final String username, final int age, final String city) {
         this.username = username;
         this.age = age;
@@ -109,6 +120,9 @@ public class User {
         myMerch = new ArrayList<>();
         recommendedSong = new Song();
         recommendedPlaylist = new Playlist("", "");
+        history = new ArrayList<>();
+        historyIndex = -1;
+        artistsListenedTo = new ArrayList<>();
     }
 
     /**
@@ -202,6 +216,7 @@ public class User {
             Song song = (Song) player.getSource().getAudioFile();
             Artist artist = (Artist) Admin.getInstance().getUser(song.getArtist());
             artist.setPlay(true);
+            this.artistsListenedTo.add(artist);
             topSongs.add((Song) player.getSource().getAudioFile());
             Integer listeners = this.getListeners();
             listeners++;
@@ -651,10 +666,30 @@ public class User {
             case "likedcontent":
                 nextPage = likedContentPage;
                 break;
+            case "artist":
+                String artist = ((Song)this.player.getSource().getAudioFile()).getArtist();
+                User pageOwner = Admin.getInstance().getUser(artist);
+                ArtistPage page = new ArtistPage(pageOwner);
+                nextPage = page;
+                break;
+            case "host":
+                String host = ((Episode)this.player.getSource().getAudioFile()).getOwner();
+                User pageOwner1 = Admin.getInstance().getUser(host);
+                HostPage page1 = new HostPage(pageOwner1);
+                nextPage = page1;
+                break;
             default:
                 return username + " is trying to access a non-existent page.";
         }
-        return username + " accessed " + nextPage.type() + " successfully.";
+        history.add(nextPage);
+        historyIndex++;
+        String type = nextPage.type();
+        if (type.equals("ArtistPage")) {
+            type = "Artist";
+        } else if (type.equals("HostPage")) {
+            type = "Host";
+        }
+        return username + " accessed " + type + " successfully.";
     }
 
     /**
@@ -1105,16 +1140,41 @@ public class User {
                 }
                 int randomIndex = random.nextInt(songs.size());
                 this.recommendedSong = songs.get(randomIndex);
+                lastRecomType = "song";
+                lastRecommended = new LibraryEntry(recommendedSong.getName()) {
+                    @Override
+                    public String getName() {
+                        return super.getName();
+                    }
+                };
                 message = "The recommendations for user " + username
                         + " have been updated successfully.";
             }
         } else if (type.equals("random_playlist")) {
             Playlist playlist = this.createRandomPlaylist();
             this.recommendedPlaylist = playlist;
+            lastRecomType = "playlist";
+            lastRecommended = new LibraryEntry(recommendedPlaylist.getName()) {
+                @Override
+                public String getName() {
+                    return super.getName();
+                }
+            };
             message = "The recommendations for user " + username
                     + " have been updated successfully.";
         } else if (type.equals("fans_playlist")) {
-
+            String artistName = ((Song)this.player.getCurrentAudioFile()).getArtist();
+            Artist artist = (Artist) Admin.getInstance().getUser(artistName);
+            this.recommendedPlaylist = artist.fansPlaylist();
+            lastRecomType = "playlist";
+            lastRecommended = new LibraryEntry(recommendedPlaylist.getName()) {
+                @Override
+                public String getName() {
+                    return super.getName();
+                }
+            };
+            message = "The recommendations for user " + username
+                    + " have been updated successfully.";
         }
         return message;
     }
@@ -1202,5 +1262,76 @@ public class User {
                         (e1, e2) -> e1,
                         LinkedHashMap::new
                 ));
+    }
+    public void addArtist(Artist artist) {
+        this.artistsListenedTo.add(artist);
+    }
+    public String previousPage() {
+        String message = new String();
+        if (historyIndex < 0) {
+            message = "There are no pages left to go back.";
+            return message;
+        }
+        historyIndex--;
+        nextPage = history.get(historyIndex);
+        message = "The user " + this.username
+                + " has navigated successfully to the previous page.";
+        return message;
+    }
+    public String nextPage() {
+        String message = new String();
+        if (historyIndex > history.size()) {
+            message = "There are no pages left to go forward.";
+            return message;
+        }
+        historyIndex++;
+        nextPage = history.get(historyIndex);
+        message = "The user " + this.username
+                + " has navigated successfully to the previous page.";
+        return message;
+    }
+    public String loadRecommendations() {
+        if (lastRecommended == null) {
+            return "No recommendations available.";
+        }
+        if (player.getSource() != null) {
+            if (player.getSource().getAudioCollection() != null) {
+                if (player.getSource().getAudioCollection().getType().equals("playlist")) {
+                    Playlist playlist = (Playlist) player.getSource().getAudioCollection();
+                    Integer adIndex = playlist.getIndexOfTrack(this.getAdvertisement().getAd());
+                    playlist.removeSong(adIndex);
+                }
+                if (player.getSource().getAudioCollection().getType().equals("album")) {
+                    Album album = (Album) player.getSource().getAudioCollection();
+                    Integer adIndex = album.getIndexOfTrack(this.getAdvertisement().getAd());
+                    album.removeSong(adIndex);
+                }
+            }
+        }
+        player.setSource(lastRecommended, lastRecomType);
+
+        if (player.getSource().getAudioFile().getType().equals("song")) {
+            Song song = (Song) player.getSource().getAudioFile();
+            Artist artist = (Artist) Admin.getInstance().getUser(song.getArtist());
+            artist.setPlay(true);
+            this.artistsListenedTo.add(artist);
+            topSongs.add((Song) player.getSource().getAudioFile());
+            Integer listeners = this.getListeners();
+            listeners++;
+            this.setListeners(listeners);
+            if (this.getCredits() != 0) {
+                premiumSongs.add((Song) player.getSource().getAudioFile());
+            }
+            if (this.getCredits() == 0) {
+                this.addSongToAd((Song) player.getSource().getAudioFile());
+            }
+        }
+        if (player.getSource().getAudioFile().getType().equals("episode")) {
+            topEpisodes.add((Episode) player.getSource().getAudioFile());
+        }
+
+        player.pause();
+
+        return "Playback loaded successfully.";
     }
 }

@@ -475,8 +475,8 @@ public final class CommandRunner {
         String message = Admin.getUser(commandInput.getUsername())
                 .changePage(commandInput.getNextPage());
         ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.put("user", commandInput.getUsername());
         objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
         objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("message", message);
 
@@ -616,9 +616,10 @@ public final class CommandRunner {
             message = "The username " + user.getUsername() + " doesn't exist.";
         }
         objectNode.put("command", commandInput.getCommand());
-        objectNode.put("message", message);
-        objectNode.put("timestamp", commandInput.getTimestamp());
         objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
         return objectNode;
     }
     /**
@@ -985,6 +986,52 @@ public final class CommandRunner {
             message = user.updateRecom(command.getRecommendationType());
             objectNode.put("message", message);
         }
+        return objectNode;
+    }
+    public static ObjectNode previousPage (CommandInput command) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
+        objectNode.put("timestamp", command.getTimestamp());
+        User user = Admin.getInstance().getUser(command.getUsername());
+        String message = null;
+        if (user == null) {
+            message = "The username " + command.getUsername() + " doesn't exist.";
+            objectNode.put("message", message);
+            return objectNode;
+        } else if (user.getType() == null || user.getType().equals("user")) {
+            message = user.previousPage();
+            objectNode.put("message", message);
+        }
+        return objectNode;
+    }
+    public static ObjectNode nextPage (CommandInput command) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", command.getCommand());
+        objectNode.put("user", command.getUsername());
+        objectNode.put("timestamp", command.getTimestamp());
+        User user = Admin.getInstance().getUser(command.getUsername());
+        String message = null;
+        if (user == null) {
+            message = "The username " + command.getUsername() + " doesn't exist.";
+            objectNode.put("message", message);
+            return objectNode;
+        } else if (user.getType() == null || user.getType().equals("user")) {
+            message = user.nextPage();
+            objectNode.put("message", message);
+        }
+        return objectNode;
+    }
+    public static ObjectNode loadRecommendation(final CommandInput commandInput) {
+        User user = Admin.getUser(commandInput.getUsername());
+        String message = user.loadRecommendations();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", commandInput.getCommand());
+        objectNode.put("user", commandInput.getUsername());
+        objectNode.put("timestamp", commandInput.getTimestamp());
+        objectNode.put("message", message);
+
         return objectNode;
     }
 }

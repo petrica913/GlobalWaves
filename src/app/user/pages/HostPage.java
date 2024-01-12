@@ -84,11 +84,11 @@ public class HostPage implements Page {
                 result.append("\n");
             }
             if (i == host.getAnnouncements().size() - 1) {
-                result.append("\n]");
+                result.append("\n");
             }
             i++;
         }
-
+        result.append("]");
         return result.toString();
     }
 

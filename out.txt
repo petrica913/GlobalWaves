@@ -1,129 +1,205 @@
 [ {
+  "command" : "addAlbum",
+  "user" : "Pink Floyd",
+  "timestamp" : 1,
+  "message" : "The username Pink Floyd doesn't exist."
+}, {
   "command" : "addUser",
-  "user" : "Whitney Houston",
+  "user" : "TED-X",
   "timestamp" : 10,
-  "message" : "The username Whitney Houston has been added successfully."
+  "message" : "The username TED-X has been added successfully."
 }, {
-  "command" : "addAlbum",
-  "user" : "Whitney Houston",
+  "command" : "addPodcast",
+  "user" : "TED-X",
   "timestamp" : 15,
-  "message" : "Whitney Houston has added new album successfully."
+  "message" : "TED-X has added new podcast successfully."
 }, {
   "command" : "addUser",
-  "user" : "Prince",
+  "user" : "Queen",
   "timestamp" : 20,
-  "message" : "The username Prince has been added successfully."
+  "message" : "The username Queen has been added successfully."
 }, {
   "command" : "addAlbum",
-  "user" : "Prince",
+  "user" : "Queen",
   "timestamp" : 25,
-  "message" : "Prince has added new album successfully."
+  "message" : "Queen has added new album successfully."
 }, {
   "command" : "addUser",
-  "user" : "morningstar",
-  "timestamp" : 35,
-  "message" : "The username morningstar has been added successfully."
-}, {
-  "command" : "addUser",
-  "user" : "joe27",
-  "timestamp" : 45,
-  "message" : "The username joe27 has been added successfully."
+  "user" : "ghiu",
+  "timestamp" : 40,
+  "message" : "The username ghiu has been added successfully."
 }, {
   "command" : "search",
-  "user" : "morningstar",
-  "timestamp" : 55,
+  "user" : "ghiu",
+  "timestamp" : 45,
   "message" : "Search returned 1 results",
-  "results" : [ "Nobody Loves Me Like You Do" ]
+  "results" : [ "Auditory Adventures" ]
 }, {
   "command" : "select",
-  "user" : "morningstar",
-  "timestamp" : 60,
-  "message" : "Successfully selected Nobody Loves Me Like You Do."
+  "user" : "ghiu",
+  "timestamp" : 50,
+  "message" : "Successfully selected Auditory Adventures."
 }, {
   "command" : "load",
-  "user" : "morningstar",
-  "timestamp" : 65,
+  "user" : "ghiu",
+  "timestamp" : 55,
   "message" : "Playback loaded successfully."
 }, {
+  "command" : "changePage",
+  "user" : "ghiu",
+  "timestamp" : 60,
+  "message" : "ghiu accessed LikedContent successfully."
+}, {
+  "user" : "ghiu",
+  "command" : "printCurrentPage",
+  "timestamp" : 65,
+  "message" : "Liked songs:\n\t[]\n\nFollowed playlists:\n\t[]"
+}, {
   "command" : "status",
-  "user" : "morningstar",
+  "user" : "ghiu",
   "timestamp" : 70,
   "stats" : {
-    "name" : "Nobody Loves Me Like You Do",
-    "remainedTime" : 221,
+    "name" : "Exploring Sonic Landscapes",
+    "remainedTime" : 2685,
     "repeat" : "No Repeat",
     "shuffle" : false,
     "paused" : false
   }
 }, {
-  "command" : "createPlaylist",
-  "user" : "morningstar",
+  "command" : "changePage",
+  "user" : "ghiu",
   "timestamp" : 75,
-  "message" : "Playlist created successfully."
+  "message" : "ghiu accessed Host successfully."
 }, {
-  "command" : "addRemoveInPlaylist",
-  "user" : "morningstar",
+  "user" : "ghiu",
+  "command" : "printCurrentPage",
   "timestamp" : 85,
-  "message" : "Successfully added to playlist."
-}, {
-  "command" : "showPlaylists",
-  "user" : "morningstar",
-  "timestamp" : 90,
-  "result" : [ {
-    "name" : "playlist1",
-    "songs" : [ "Nobody Loves Me Like You Do" ],
-    "visibility" : "public",
-    "followers" : 0
-  } ]
-}, {
-  "command" : "updateRecommendations",
-  "user" : "morningstar",
-  "timestamp" : 95,
-  "message" : "The recommendations for user morningstar have been updated successfully."
+  "message" : "Podcasts:\n\t[Auditory Adventures:\n\t[Exploring Sonic Landscapes - Journey through the world's most unique auditory experiences., The Future of Music Technology - A look into the innovations shaping the future of music production and listening., Cultural Beats - An exploration of how different cultures influence music genres.]\n]\n\nAnnouncements:\n\t[]"
 }, {
   "command" : "search",
-  "user" : "morningstar",
-  "timestamp" : 105,
+  "user" : "ghiu",
+  "timestamp" : 90,
   "message" : "Search returned 1 results",
-  "results" : [ "Purple Rain" ]
+  "results" : [ "Bohemian Rhapsody" ]
 }, {
   "command" : "select",
-  "user" : "morningstar",
-  "timestamp" : 110,
-  "message" : "Successfully selected Purple Rain."
+  "user" : "ghiu",
+  "timestamp" : 100,
+  "message" : "Successfully selected Bohemian Rhapsody."
 }, {
   "command" : "load",
-  "user" : "morningstar",
-  "timestamp" : 115,
+  "user" : "ghiu",
+  "timestamp" : 105,
   "message" : "Playback loaded successfully."
 }, {
+  "command" : "status",
+  "user" : "ghiu",
+  "timestamp" : 115,
+  "stats" : {
+    "name" : "Bohemian Rhapsody",
+    "remainedTime" : 340,
+    "repeat" : "No Repeat",
+    "shuffle" : false,
+    "paused" : false
+  }
+}, {
   "command" : "like",
-  "user" : "morningstar",
-  "timestamp" : 120,
+  "user" : "ghiu",
+  "timestamp" : 130,
   "message" : "Like registered successfully."
 }, {
   "command" : "updateRecommendations",
-  "user" : "morningstar",
-  "timestamp" : 125,
-  "message" : "The recommendations for user morningstar have been updated successfully."
+  "user" : "ghiu",
+  "timestamp" : 152,
+  "message" : "The recommendations for user ghiu have been updated successfully."
 }, {
-  "user" : "morningstar",
+  "command" : "loadRecommendations",
+  "user" : "ghiu",
+  "timestamp" : 155,
+  "message" : "Please select a source before attempting to load."
+}, {
+  "command" : "status",
+  "user" : "ghiu",
+  "timestamp" : 165,
+  "stats" : {
+    "name" : "Bohemian Rhapsody",
+    "remainedTime" : 290,
+    "repeat" : "No Repeat",
+    "shuffle" : false,
+    "paused" : false
+  }
+}, {
+  "command" : "changePage",
+  "user" : "ghiu",
+  "timestamp" : 175,
+  "message" : "ghiu accessed Artist successfully."
+}, {
+  "command" : "like",
+  "user" : "ghiu",
+  "timestamp" : 195,
+  "message" : "Unlike registered successfully."
+}, {
+  "command" : "changePage",
+  "user" : "ghiu",
+  "timestamp" : 200,
+  "message" : "ghiu accessed Home successfully."
+}, {
+  "user" : "ghiu",
   "command" : "printCurrentPage",
-  "timestamp" : 135,
-  "message" : "Liked songs:\n\t[Purple Rain]\n\nFollowed playlists:\n\t[]\n\nSong recommendations:\n\t[All at Once]\n\nPlaylists recommendations:\n\t[morningstar's recommendations]"
+  "timestamp" : 205,
+  "message" : "Liked songs:\n\t[]\n\nFollowed playlists:\n\t[]\n\nSong recommendations:\n\t[Seven Seas of Rhye]\n\nPlaylists recommendations:\n\t[]"
+}, {
+  "command" : "previousPage",
+  "user" : "ghiu",
+  "timestamp" : 210,
+  "message" : "The user ghiu has navigated successfully to the previous page."
+}, {
+  "command" : "previousPage",
+  "user" : "ghiu",
+  "timestamp" : 215,
+  "message" : "The user ghiu has navigated successfully to the previous page."
+}, {
+  "command" : "previousPage",
+  "user" : "ghiu",
+  "timestamp" : 220,
+  "message" : "The user ghiu has navigated successfully to the previous page."
+}, {
+  "command" : "nextPage",
+  "user" : "ghiu",
+  "timestamp" : 235,
+  "message" : "The user ghiu has navigated successfully to the previous page."
+}, {
+  "user" : "ghiu",
+  "command" : "printCurrentPage",
+  "timestamp" : 240,
+  "message" : "Podcasts:\n\t[Auditory Adventures:\n\t[Exploring Sonic Landscapes - Journey through the world's most unique auditory experiences., The Future of Music Technology - A look into the innovations shaping the future of music production and listening., Cultural Beats - An exploration of how different cultures influence music genres.]\n]\n\nAnnouncements:\n\t[]"
+}, {
+  "command" : "changePage",
+  "user" : "ghiu",
+  "timestamp" : 245,
+  "message" : "ghiu accessed Home successfully."
+}, {
+  "command" : "nextPage",
+  "user" : "ghiu",
+  "timestamp" : 255,
+  "message" : "The user ghiu has navigated successfully to the previous page."
+}, {
+  "user" : "ghiu",
+  "command" : "printCurrentPage",
+  "timestamp" : 265,
+  "message" : "Liked songs:\n\t[]\n\nFollowed playlists:\n\t[]\n\nSong recommendations:\n\t[Seven Seas of Rhye]\n\nPlaylists recommendations:\n\t[]"
+}, {
+  "command" : "nextPage",
+  "user" : "ghiu",
+  "timestamp" : 275,
+  "message" : "The user ghiu has navigated successfully to the previous page."
 }, {
   "command" : "endProgram",
   "result" : {
-    "Prince" : {
+    "Queen" : {
       "merchRevenue" : 0.0,
       "songRevenue" : 0.0,
       "ranking" : 1,
-      "mostProfitableSong" : "N/A"
-    },
-    "Whitney Houston" : {
-      "merchRevenue" : 0.0,
-      "songRevenue" : 0.0,
-      "ranking" : 2,
       "mostProfitableSong" : "N/A"
     }
   }

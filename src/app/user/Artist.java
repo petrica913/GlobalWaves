@@ -2,6 +2,7 @@ package app.user;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Array;
 import java.util.*;
 
 import app.Admin;
@@ -216,5 +217,44 @@ public class Artist extends User {
     public void updateMerchRevenue(Merch merch) {
         this.merchRevenue += merch.getPrice();
         this.boughtMerch = true;
+    }
+    public ArrayList<User> getTop5Fans() {
+        ArrayList<User> top5Fans = new ArrayList<>();
+        Admin admin = Admin.getInstance();
+        Map<User, Integer> listeningsMap = new HashMap<>();
+
+        for (User user : admin.getUsers()) {
+            if (user.getArtistsListenedTo().contains(this)) {
+                listeningsMap.put(user, listeningsMap.getOrDefault(user, 0) + 1);
+            }
+        }
+
+        listeningsMap.entrySet().stream()
+                .sorted(Map.Entry.<User, Integer>comparingByValue().reversed())
+                .limit(5)
+                .forEach(entry -> top5Fans.add(entry.getKey()));
+
+        return top5Fans;
+    }
+    public Playlist fansPlaylist() {
+        ArrayList<User> top5Fans = this.getTop5Fans();
+        Playlist fansPlaylist = new Playlist(this.getUsername() + " Fan Club recommendations",
+                this.getUsername());
+        for (User fan : top5Fans) {
+            List<Song> likedSongs = new ArrayList<>(fan.getLikedSongs());
+
+            likedSongs.sort(Comparator.comparingInt(Song::getLikes).reversed());
+
+            for (Song song : likedSongs) {
+                if (fansPlaylist.getSongs().contains(song)) {
+                    likedSongs.remove(song);
+                }
+            }
+            List<Song> top5FanSongs = likedSongs.subList(0, Math.min(5, likedSongs.size()));
+            for (Song song : top5FanSongs) {
+                fansPlaylist.addSong(song);
+            }
+        }
+        return fansPlaylist;
     }
 }
