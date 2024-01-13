@@ -29,16 +29,45 @@ a structured and flexible way to encapsulate the subscription operation. The Com
 pattern proves valuable in managing and organizing complex user interactions, providing a
 clear and structured approach to handling subscription-related operations.
 
+For the implementation of the page system I've preferred the Visitor design pattern because
+it separates the logic for displaying pages from the page classes themselves. This promotes
+a clear separation of concerns, making the code more modular and easier to maintain. The
+pattern adheres to the Open/Closed Principle, allowing you to add new operations (visitors) 
+without modifying the existing page classes. This is beneficial for extensibility, as you 
+can introduce new functionality without altering the existing codebase. The pattern allows 
+you to define different visitors for different purposes. For example, you could have a 
+PageExportVisitor for exporting pages, a PageValidationVisitor for validating pages, etc. 
+This flexibility makes it easy to extend the functionality of your system without modifying 
+existing code.
 
-## Skel Structure
+I've used the help of ChatGPT in the making of createTopNode method from ArtistStatistics and
+HostStatistics classes and for the getTopNEntries method from UserStatistics.
 
-* src/
-  * checker/ - checker files
-  * fileio/ - contains classes used to read data from the json files
-  * main/
-      * Main - the Main class runs the checker on your implementation. Add the entry point to your implementation in it. Run Main to test your implementation from the IDE or from command line.
-      * Test - run the main method from Test class with the name of the input file from the command line and the result will be written
-        to the out.txt file. Thus, you can compare this result with ref.
-* input/ - contains the tests and library in JSON format
-* ref/ - contains all reference output for the tests in JSON format
+
+## New functionalities added
+
+* Wrapped (shows a resume for the user's activity):
+  * Stats for users
+  * Stats for artists
+  * Stats for hosts
+* Monetization - a way of paying the artists for their work by:
+  * Ability to buy merch
+  * Listening to their songs via premium account/listening to adds
+* Notifications - every time an artist/host adds something their subscribers are notified
+* Subscribe - the ability to subscribe to an artist/host
+* Get Notifications - the ability to check your notifications
+* User recommendations - there are 3 types of recommendations:
+  * Random Song: it will generate a song based on the genre of the song that the user is 
+  currently listening to
+  * Fans Playlist: it will generate a playlist based on the likes of the top 5 fans of the 
+  artist that is currently listened to
+  * Random Playlist: it is generated from the top 3 genres of the user (based on likes, 
+  created playlists, followed playlists)
+* Load Recommendations - the ability to listen to the last recommendation that was made 
+for the user
+* Page Navigation - the ability to navigate through different pages:
+  * changePage has now the ability to redirect the user on the artist's/host's 
+  (that the user is currently listening to) page
+  * nextPage will direct the user on the next page in the user's history
+  * previousPage will direct the user on the previous page in user's history
 
