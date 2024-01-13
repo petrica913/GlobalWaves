@@ -16,11 +16,7 @@ import app.player.PlayerStats;
 import app.searchBar.Filters;
 import app.searchBar.SearchBar;
 import app.user.Collections.Announcement;
-import app.user.pages.Page;
-import app.user.pages.ArtistPage;
-import app.user.pages.HomePage;
-import app.user.pages.HostPage;
-import app.user.pages.LikedContentPage;
+import app.user.pages.*;
 import app.user.Collections.Event;
 import app.user.Collections.Merch;
 import app.utils.Enums;
@@ -711,7 +707,9 @@ public class User {
             nextPage = new LikedContentPage(this);
         }
         if (nextPage != null) {
-            return nextPage.display();
+            PagePrinterVisitor printerVisitor = new PagePrinterVisitor();
+            nextPage.accept(printerVisitor);
+            return printerVisitor.getResult();
         } else {
             return "No next page set.";
         }

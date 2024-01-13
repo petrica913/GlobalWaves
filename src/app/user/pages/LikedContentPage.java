@@ -53,4 +53,8 @@ public class LikedContentPage implements Page {
         return followedPlaylistsResult.toString();
     }
 
+    @Override
+    public void accept(PageVisitor visitor) {
+        visitor.visit(this);
+    }
 }

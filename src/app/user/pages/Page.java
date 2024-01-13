@@ -10,4 +10,6 @@ public interface Page {
      * @return page type
      */
     String type();
+    void accept(PageVisitor visitor);
+
 }

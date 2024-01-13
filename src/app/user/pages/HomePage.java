@@ -74,13 +74,11 @@ public class HomePage implements Page {
         return "[" + user.getRecommendedSong().getName() + "]";
     }
     private String displayRecommendedPlaylist() {
-//        ArrayList<Song> list = new ArrayList<>();
-//        list.addAll(user.getRecommendedPlaylist().getSongs());
-//        List<String> recommendedSongs = list.stream()
-//                .map(LibraryEntry::getName)
-//                .collect(Collectors.toList());
-//
-//        return recommendedSongs.toString();
         return "[" + user.getRecommendedPlaylist().getName() + "]";
+    }
+
+    @Override
+    public void accept(PageVisitor visitor) {
+        visitor.visit(this);
     }
 }
