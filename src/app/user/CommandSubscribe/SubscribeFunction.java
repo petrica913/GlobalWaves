@@ -11,7 +11,7 @@ public class SubscribeFunction implements SubscribeCommand{
     }
 
     @Override
-    public String execute() {
+    public void execute() {
         String message = null;
         if (target != null) {
             target.subscribe(user);
@@ -23,6 +23,6 @@ public class SubscribeFunction implements SubscribeCommand{
                         + target.getUsername() + " successfully.";
             }
         }
-        return message;
+        user.setSubscribeMessage(message);
     }
 }

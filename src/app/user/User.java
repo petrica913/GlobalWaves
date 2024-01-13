@@ -97,6 +97,9 @@ public class User {
     private LibraryEntry lastRecommended;
     @Getter
     private String lastRecomType;
+    @Getter
+    @Setter
+    private String subscribeMessage;
     public User(final String username, final int age, final String city) {
         this.username = username;
         this.age = age;

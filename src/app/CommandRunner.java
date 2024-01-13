@@ -8,7 +8,9 @@ import app.player.PlayerStats;
 import app.searchBar.Filters;
 import app.user.Artist;
 import app.user.Collections.Merch;
+import app.user.CommandSubscribe.SubscribeCommand;
 import app.user.CommandSubscribe.SubscribeFunction;
+import app.user.CommandSubscribe.SubscribeInvoker;
 import app.user.Host;
 import app.user.Notification;
 import app.user.User;
@@ -900,8 +902,10 @@ public final class CommandRunner {
             } else {
                 pageOwner = ((HostPage) user.getNextPage()).getUser();
             }
-            SubscribeFunction subscribeFunction = new SubscribeFunction(user, pageOwner);
-            message = subscribeFunction.execute();
+            SubscribeCommand subscribeCommand = new SubscribeFunction(user, pageOwner);
+            SubscribeInvoker invoker = new SubscribeInvoker(subscribeCommand);
+            invoker.executeCommand();
+            message = user.getSubscribeMessage();
             objectNode.put("message", message);
         }
         return objectNode;
