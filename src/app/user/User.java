@@ -169,11 +169,11 @@ public class User {
             return "The selected ID is too high.";
         }
         if (searchBar.getLastSearchType().equals("artist")) {
-            nextPage = new ArtistPage(Admin.getUser(selected.getName()));
+            nextPage = new ArtistPage(Admin.getInstance().getUser(selected.getName()));
             return "Successfully selected %s's page.".formatted(selected.getName());
         }
         if (searchBar.getLastSearchType().equals("host")) {
-            nextPage = new HostPage(Admin.getUser(selected.getName()));
+            nextPage = new HostPage(Admin.getInstance().getUser(selected.getName()));
             return "Successfully selected %s's page.".formatted(selected.getName());
         }
 
@@ -769,7 +769,7 @@ public class User {
 
         Artist artist = (Artist) this;
 
-        if (Admin.getUser(username) == null) {
+        if (Admin.getInstance().getUser(username) == null) {
             return "The username " + username + " doesn't exist.";
         }
 
@@ -800,7 +800,7 @@ public class User {
      */
     public String addMerchandise(final String merchName,
                                  final String description, final Integer price) {
-        if (Admin.getUser(username) == null) {
+        if (Admin.getInstance().getUser(username) == null) {
             return "The username " + username + " doesn't exist.";
         }
 
@@ -906,7 +906,7 @@ public class User {
 
         Host host = (Host) this;
 
-        if (Admin.getUser(username) == null) {
+        if (Admin.getInstance().getUser(username) == null) {
             return "The username " + username + " doesn't exist.";
         }
 
@@ -936,7 +936,7 @@ public class User {
 
         Host host = (Host) this;
 
-        if (Admin.getUser(username) == null) {
+        if (Admin.getInstance().getUser(username) == null) {
             return "The username " + username + " doesn't exist.";
         }
 
@@ -990,7 +990,7 @@ public class User {
         for (Map.Entry<String, Integer> entry : artistsListens.entrySet()) {
             String artist = entry.getKey();
             Integer listens = entry.getValue();
-            Artist artist1 = (Artist) Admin.getUser(artist);
+            Artist artist1 = (Artist) Admin.getInstance().getUser(artist);
             artist1.updateSongRevenue(totalListens, listens);
             for (Song song : premiumSongs) {
                 if (song.matchesArtist(artist1.getUsername())) {
@@ -1080,7 +1080,7 @@ public class User {
         for (Map.Entry<String, Integer> entry : artistListens.entrySet()) {
             String artist = entry.getKey();
             Integer listens = entry.getValue();
-            Artist artist1 = (Artist) Admin.getUser(artist);
+            Artist artist1 = (Artist) Admin.getInstance().getUser(artist);
             total = totalListens;
             aListen = listens;
             artist1.updateSongRevenueFree(totalListens, listens,

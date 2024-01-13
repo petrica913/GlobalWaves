@@ -213,7 +213,7 @@ public class Player {
                         topSongs.add((Song) this.getCurrentAudioFile());
                         owner.addArtist(artist1);
                         String artistName = ((Song) source.getAudioFile()).getArtist();
-                        Artist artist = (Artist) Admin.getUser(artistName);
+                        Artist artist = (Artist) Admin.getInstance().getUser(artistName);
                         if (artist != null) {
                             artist.setPlay(true);
                             Integer listeners = artist.getListeners();

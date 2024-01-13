@@ -28,8 +28,13 @@ Starting audit...
 [ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/audio/Files/Song.java:143:31: Parameter newRevenue should be final. [FinalParameters]
 [ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/audio/Files/Song.java:146:5: Missing a Javadoc comment. [MissingJavadocMethod]
 [ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:26:8: Unused import - java.util.Comparator. [UnusedImports]
+[ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:457: Line is longer than 100 characters (found 110). [LineLength]
+[ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:494: Line is longer than 100 characters (found 109). [LineLength]
+[ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:542: Line is longer than 100 characters (found 110). [LineLength]
 [ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:783:5: Missing a Javadoc comment. [MissingJavadocMethod]
 [ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:783:38: Parameter command should be final. [FinalParameters]
+[ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:790: Line is longer than 100 characters (found 109). [LineLength]
+[ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:794: Line is longer than 100 characters (found 107). [LineLength]
 [ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:807:5: Missing a Javadoc comment. [MissingJavadocMethod]
 [ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:807:41: '(' is preceded with whitespace. [MethodParamPad]
 [ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/CommandRunner.java:815:5: Missing a Javadoc comment. [MissingJavadocMethod]
@@ -234,4 +239,4 @@ Starting audit...
 [ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/app/user/Advertisement.java:25:13: Variable 'price' must be private and have accessor methods. [VisibilityModifier]
 [ERROR] /home/vladimir/Desktop/POO/Homework2/oop-project-2023/etapa3/./src/fileio/input/CommandInput.java:134:39: Parameter recommendationType should be final. [FinalParameters]
 Audit done.
-Checkstyle ends with 234 errors.
+Checkstyle ends with 239 errors.

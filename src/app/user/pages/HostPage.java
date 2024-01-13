@@ -16,7 +16,7 @@ public class HostPage implements Page {
 
     public HostPage(final User user) {
         this.user = user;
-        this.host = (Host) Admin.getUser(user.getUsername());
+        this.host = (Host) Admin.getInstance().getUser(user.getUsername());
     }
 
     /**

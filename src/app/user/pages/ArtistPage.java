@@ -16,7 +16,7 @@ public class ArtistPage implements Page {
 
     public ArtistPage(final User user) {
         this.user = user;
-        this.artist = (Artist) Admin.getUser(user.getUsername());
+        this.artist = (Artist) Admin.getInstance().getUser(user.getUsername());
     }
 
     /**
