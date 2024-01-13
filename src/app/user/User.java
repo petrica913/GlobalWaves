@@ -16,7 +16,12 @@ import app.player.PlayerStats;
 import app.searchBar.Filters;
 import app.searchBar.SearchBar;
 import app.user.Collections.Announcement;
-import app.user.pages.*;
+import app.user.pages.HomePage;
+import app.user.pages.LikedContentPage;
+import app.user.pages.Page;
+import app.user.pages.ArtistPage;
+import app.user.pages.HostPage;
+import app.user.pages.PagePrinterVisitor;
 import app.user.Collections.Event;
 import app.user.Collections.Merch;
 import app.utils.Enums;
@@ -24,9 +29,13 @@ import fileio.input.PodcastInput;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.print.PageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Random;
+import java.util.LinkedHashMap;
 
 public class User {
     @Getter
@@ -96,6 +105,13 @@ public class User {
     @Getter
     @Setter
     private String subscribeMessage;
+    private static final int CREDIS = 1000000;
+    private static final int REMAINING_TIME = 30;
+    private static final int TOP5 = 5;
+    private static final int TOP3 = 3;
+    private static final int TOP2 = 2;
+
+
     public User(final String username, final int age, final String city) {
         this.username = username;
         this.age = age;
@@ -127,10 +143,10 @@ public class User {
     /**
      * For search command
      * @param filters for filters
-     * @param type for type
+     * @param searchType for type
      * @return the result message
      */
-    public ArrayList<String> search(final Filters filters, final String type) {
+    public ArrayList<String> search(final Filters filters, final String searchType) {
         searchBar.clearSelection();
         player.stop();
 
@@ -139,7 +155,7 @@ public class User {
         if (!online) {
             return results;
         }
-        List<LibraryEntry> libraryEntries = searchBar.search(filters, type);
+        List<LibraryEntry> libraryEntries = searchBar.search(filters, searchType);
 
         for (LibraryEntry libraryEntry : libraryEntries) {
             results.add(libraryEntry.getName());
@@ -217,9 +233,9 @@ public class User {
             artist.setPlay(true);
             this.artistsListenedTo.add(artist);
             topSongs.add((Song) player.getSource().getAudioFile());
-            Integer listeners = this.getListeners();
-            listeners++;
-            this.setListeners(listeners);
+            Integer listenersThis = this.getListeners();
+            listenersThis++;
+            this.setListeners(listenersThis);
             if (this.getCredits() != 0) {
                 premiumSongs.add((Song) player.getSource().getAudioFile());
             }
@@ -667,13 +683,13 @@ public class User {
                 nextPage = likedContentPage;
                 break;
             case "artist":
-                String artist = ((Song)this.player.getSource().getAudioFile()).getArtist();
+                String artist = ((Song) this.player.getSource().getAudioFile()).getArtist();
                 User pageOwner = Admin.getInstance().getUser(artist);
                 ArtistPage page = new ArtistPage(pageOwner);
                 nextPage = page;
                 break;
             case "host":
-                String host = ((Episode)this.player.getSource().getAudioFile()).getOwner();
+                String host = ((Episode) this.player.getSource().getAudioFile()).getOwner();
                 User pageOwner1 = Admin.getInstance().getUser(host);
                 HostPage page1 = new HostPage(pageOwner1);
                 nextPage = page1;
@@ -686,13 +702,13 @@ public class User {
         }
         history.add(nextPage);
         historyIndex++;
-        String type = nextPage.type();
-        if (type.equals("ArtistPage")) {
-            type = "Artist";
-        } else if (type.equals("HostPage")) {
-            type = "Host";
+        String pageType = nextPage.type();
+        if (pageType.equals("ArtistPage")) {
+            pageType = "Artist";
+        } else if (pageType.equals("HostPage")) {
+            pageType = "Host";
         }
-        return username + " accessed " + type + " successfully.";
+        return username + " accessed " + pageType + " successfully.";
     }
 
     /**
@@ -966,9 +982,16 @@ public class User {
         this.followedPlaylists = followedPlaylists;
     }
 
+    /**
+     * Updates the credits for a user when the user buys premium
+     */
     public void buyPremium() {
-        this.credits = 1000000;
+        this.credits = CREDIS;
     }
+
+    /**
+     * @return a map for with artist listened to
+     */
     public Map<String, Integer> artistsListenedTo() {
         Map<String, Integer> artistListens = new HashMap<>();
         for (Song song : premiumSongs) {
@@ -977,6 +1000,9 @@ public class User {
         }
         return artistListens;
     }
+    /**
+     * @return a map for with songs listened to
+     */
     public Map<String, Integer> songsListenedTo() {
         Map<String, Integer> songs = new HashMap<>();
         for (Song song : premiumSongs) {
@@ -984,6 +1010,10 @@ public class User {
         }
         return songs;
     }
+
+    /**
+     * It cancels the premium for a user
+     */
     public void cancelPremium() {
         Map<String, Integer> artistsListens = this.artistsListenedTo();
         Map<String, Integer> songs = this.songsListenedTo();
@@ -1002,8 +1032,9 @@ public class User {
                 String songName = entrySong.getKey();
                 Integer listensSong = entrySong.getValue();
                 for (Song song : artist1.getProfitableSongs()) {
-                    if (song.getName().equals(songName) && song.matchesArtist(artist1.getUsername())) {
-                        double revenue = (double) 1000000 / listens * listensSong;
+                    if (song.getName().equals(songName)
+                            && song.matchesArtist(artist1.getUsername())) {
+                        double revenue = (double) CREDIS / listens * listensSong;
                         song.updateRevenue(revenue);
                         break;
                     }
@@ -1014,7 +1045,14 @@ public class User {
         this.credits = 0;
         this.premiumSongs.clear();
     }
-    public void adBreak(Integer timestamp, Song ad, Integer price) {
+
+    /**
+     * It is used for adding a break
+     * @param timestamp for the timestamp when an ad is added
+     * @param ad for the ad
+     * @param price for the ad's price
+     */
+    public void adBreak(final Integer timestamp, final Song ad, final Integer price) {
         if (this.player.getSource().getAudioCollection() == null
                 && this.player.getSource().getAudioFile().getType().equals("song")) {
             Playlist playlist = new Playlist("adPlaylist", this.username);
@@ -1059,7 +1097,13 @@ public class User {
         }
 
     }
-    public void addSongToAd (Song song) {
+
+    /**
+     * It is used to add a song in the list of
+     * songs that were listened to between 2 ads
+     * @param song for the song
+     */
+    public void addSongToAd (final Song song) {
         ArrayList<Song> songs = advertisement.getSongsBetween();
         songs.add(song);
         advertisement.setSongsBetween(songs);
@@ -1068,7 +1112,12 @@ public class User {
     private Integer total = 0;
     @Getter
     private Integer aListen = 0;
-    public void distributeMoney (ArrayList<Song> songs) {
+
+    /**
+     * It is used to distribute money to the artists
+     * @param songs
+     */
+    public void distributeMoney (final ArrayList<Song> songs) {
         Map<String, Integer> artistListens = new HashMap<>();
         Map<String, Integer> songListens = new HashMap<>();
         for (Song song : songs) {
@@ -1088,20 +1137,41 @@ public class User {
                     this.getAdvertisement().getPrice());
         }
     }
-    public void subscribe(User user) {
+
+    /**
+     * It is used for subscribing a user
+     * @param user for the given user
+     */
+    public void subscribe(final User user) {
         if (!subscribers.contains(user)) {
             subscribers.add(user);
         } else {
             subscribers.remove(user);
         }
     }
-    public void addNotification(Notification notification) {
+
+    /**
+     * For adding a notification in user notifications
+     * @param notification for the given notification
+     */
+    public void addNotification(final Notification notification) {
         notifications.add(notification);
     }
+
+    /**
+     * Used for resetting the user's notifications
+     */
     public void resetNotifications() {
         this.notifications = new ArrayList<>();
     }
-    public String buyMerch(String merchName, User pageOwner) {
+
+    /**
+     * Used when a user buys merch from an artist
+     * @param merchName for the merch name
+     * @param pageOwner for the owner of the user's current page
+     * @return the info about the act of buying merch
+     */
+    public String buyMerch(final String merchName, final User pageOwner) {
         String message = null;
         Artist artist = null;
         if (pageOwner != null) {
@@ -1123,11 +1193,15 @@ public class User {
         }
         return message;
     }
-    public String updateRecom(String type) {
+
+    /**
+     * @param type for the type of recommendation
+     * @return the info about the act of updating the recommendations
+     */
+    public String updateRecom(final String type) {
         String message = null;
-//        this.resetRecom();
         if (type.equals("random_song")) {
-            if (this.player.getSource().getRemainedDuration() > 30) {
+            if (this.player.getSource().getRemainedDuration() > REMAINING_TIME) {
                 Integer seed = this.player.getSource().getRemainedDuration();
                 Admin admin = Admin.getInstance();
                 Song currentSong = (Song) this.player.getSource().getAudioFile();
@@ -1166,6 +1240,10 @@ public class User {
         }
         return message;
     }
+
+    /**
+     * @return a random playlist
+     */
     public Playlist createRandomPlaylist() {
         ArrayList<Song> listOfSongs = new ArrayList<>();
         listOfSongs.addAll(this.getLikedSongs());
@@ -1216,12 +1294,20 @@ public class User {
         Map<Song, Integer> genre2Map = genreMap(genre2Songs);
         Map<Song, Integer> genre3Map = genreMap(genre3Songs);
         Playlist playlist = new Playlist(username + "'s recommendations", username);
-        addTopSongsToPlaylist(genre1Map, playlist, 5);
-        addTopSongsToPlaylist(genre2Map, playlist, 3);
-        addTopSongsToPlaylist(genre3Map, playlist, 2);
+        addTopSongsToPlaylist(genre1Map, playlist, TOP5);
+        addTopSongsToPlaylist(genre2Map, playlist, TOP3);
+        addTopSongsToPlaylist(genre3Map, playlist, TOP2);
         return playlist;
     }
-    private void addTopSongsToPlaylist(Map<Song, Integer> songMap, Playlist playlist, int topCount) {
+
+    /**
+     * Used for adding top songs to a playlist
+     * @param songMap for the song map
+     * @param playlist for the playlist where the songs will be added
+     * @param topCount for the count of songs
+     */
+    private void addTopSongsToPlaylist(final Map<Song, Integer> songMap,
+                                       final Playlist playlist, final int topCount) {
         int count = 0;
         for (Map.Entry<Song, Integer> entry : songMap.entrySet()) {
             playlist.addSong(entry.getKey());
@@ -1232,7 +1318,11 @@ public class User {
         }
     }
 
-    private Map<Song, Integer> genreMap (ArrayList<Song> songs) {
+    /**
+     * @param songs for the songs
+     * @return a map of genres that were listened to
+     */
+    private Map<Song, Integer> genreMap (final ArrayList<Song> songs) {
         Map<Song, Integer> songLikesMap = new HashMap<>();
         for (Song song : songs) {
             songLikesMap.put(song, song.getLikes());
@@ -1247,7 +1337,12 @@ public class User {
                         LinkedHashMap::new
                 ));
     }
-    public void addArtist(Artist artist) {
+
+    /**
+     * Adds an artist to the list of the listened artists
+     * @param artist for the artist
+     */
+    public void addArtist(final Artist artist) {
         this.artistsListenedTo.add(artist);
     }
     public String previousPage() {
@@ -1262,6 +1357,10 @@ public class User {
                 + " has navigated successfully to the previous page.";
         return message;
     }
+
+    /**
+     * @return the info about the act of changing the page to the next one
+     */
     public String nextPage() {
         String message = new String();
         historyIndex++;
@@ -1274,6 +1373,10 @@ public class User {
                 + " has navigated successfully to the next page.";
         return message;
     }
+
+    /**
+     * @return the info about the act of loading recommendations
+     */
     public String loadRecommendations() {
         if (lastRecommended == null) {
             return "No recommendations available.";

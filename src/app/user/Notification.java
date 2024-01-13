@@ -7,7 +7,7 @@ public class Notification {
     private String name;
     @Getter
     private String description;
-    public Notification(String name, User user){
+    public Notification(final String name, final User user) {
         this.name = name;
         this.description = name + " from " + user.getUsername() + ".";
     }
