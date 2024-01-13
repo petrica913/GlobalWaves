@@ -201,10 +201,10 @@ public class Player {
                 }
                 time -= source.getDuration();
                 next();
-                if (source != null){
-                    if (source.getAudioFile().getType().equals("song") &&
-                            source.getAudioCollection() != null &&
-                            !this.getSource().getAudioFile().getName().equals("Ad Break")) {
+                if (source != null) {
+                    if (source.getAudioFile().getType().equals("song")
+                            && source.getAudioCollection() != null
+                            && !this.getSource().getAudioFile().getName().equals("Ad Break")) {
                         Song song = (Song) this.getSource().getAudioFile();
                         Artist artist1 = (Artist) Admin.getInstance().getUser(song.getArtist());
                         if (artist1 != null) {
@@ -232,7 +232,6 @@ public class Player {
                             String ownerName = owner.getUsername();
                             owner.addSongToAd((Song) this.getCurrentAudioFile());
                         }
-                        // aici vezi daca indexu din audiocollection al sourcei e mai mare decat ad-u
                         Song ad = owner.getAdvertisement().getAd();
                         if (source.getAudioFile().getName().equals(ad.getName())) {
                             owner.getAdvertisement().setBeenPlayed(true);
@@ -242,8 +241,10 @@ public class Player {
                                 && owner.getAdvertisement().isBeenPlayed()) {
                             Playlist playlist = (Playlist) source.getAudioCollection();
                             Integer currentIndex = playlist.getIndexOfTrack(currentSong);
-                            Integer adIndex = playlist.getIndexOfTrack(owner.getAdvertisement().getAd());
-                            if (currentIndex > adIndex && owner.getAdvertisement().isBeenPlayed()) {
+                            Integer adIndex = playlist.getIndexOfTrack(owner.
+                                    getAdvertisement().getAd());
+                            if (currentIndex > adIndex && owner.getAdvertisement()
+                                    .isBeenPlayed()) {
                                 playlist.removeSong(adIndex);
                                 owner.distributeMoney(owner.getAdvertisement().getSongsBetween());
                                 setArtistsProfitable(owner.getAdvertisement().getSongsBetween(),
@@ -255,12 +256,15 @@ public class Player {
                                 && owner.getAdvertisement().isBeenPlayed()) {
                             Album album = (Album) source.getAudioCollection();
                             Integer currentIndex = album.getIndexOfTrack(currentSong);
-                            Integer adIndex = album.getIndexOfTrack(owner.getAdvertisement().getAd());
-                            if (currentIndex > adIndex && owner.getAdvertisement().isBeenPlayed()) {
+                            Integer adIndex = album.getIndexOfTrack(owner.
+                                    getAdvertisement().getAd());
+                            if (currentIndex > adIndex && owner.
+                                    getAdvertisement().isBeenPlayed()) {
                                 album.removeSong(adIndex);
                                 owner.distributeMoney(owner.getAdvertisement().getSongsBetween());
                                 setArtistsProfitable(owner.getAdvertisement().getSongsBetween(),
-                                        owner.getTotal(), owner.getAListen());                                owner.setAdvertisement(new Advertisement());
+                                        owner.getTotal(), owner.getAListen());
+                                owner.setAdvertisement(new Advertisement());
                             }
                         }
                     }
@@ -270,7 +274,7 @@ public class Player {
 
                 }
                 if (paused) {
-                    if (source == null && currentAd == true) {
+                    if (source == null && currentAd) {
                         owner.distributeMoney(owner.getAdvertisement().getSongsBetween());
                         setArtistsProfitable(owner.getAdvertisement().getSongsBetween(),
                                 owner.getTotal(), owner.getAListen());
@@ -375,17 +379,28 @@ public class Player {
 
         return new PlayerStats(filename, duration, repeatMode, shuffle, paused);
     }
-    public void sourceTime(Integer time) {
+
+    /**
+     * @param time for the time that will be set on the remaining time of the source
+     */
+    public void sourceTime(final Integer time) {
         source.setRemainedDuration(time);
     }
-    public void setArtistsProfitable(ArrayList<Song> songs,
-                                     Integer totalListens, Integer listens) {
+
+    /**
+     * @param songs for the profitable songs
+     * @param totalListens for the number of total listens
+     * @param listens for the number of listens of that artist
+     */
+    public void setArtistsProfitable(final ArrayList<Song> songs,
+                                     final Integer totalListens, final Integer listens) {
         for (Song song : songs) {
             Artist artist = (Artist) Admin.getInstance().getUser(song.getArtist());
             ArrayList<Song> artistSongs = artist.getFreeProfitableSongs();
             artistSongs.add(song);
             artist.setFreeProfitableSongs(artistSongs);
-            double revenue = (double) owner.getAdvertisement().getPrice() / totalListens * listens;
+            double revenue = (double) owner.
+                    getAdvertisement().getPrice() / totalListens * listens;
             song.updateRevenue(revenue);
         }
     }

@@ -92,8 +92,11 @@ public class HostPage implements Page {
         return result.toString();
     }
 
+    /**
+     * @param visitor for the visitor
+     */
     @Override
-    public void accept(PageVisitor visitor) {
+    public void accept(final PageVisitor visitor) {
         visitor.visit(this);
     }
 }

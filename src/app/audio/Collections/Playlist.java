@@ -144,13 +144,21 @@ public final class Playlist extends AudioCollection {
     public void removeSongs(final List<Song> songsToRemove) {
         songs.removeAll(songsToRemove);
     }
-    public void addSongs(final List<Song> songsToAdd) {
-        songs.addAll(songsToAdd);
-    }
+
+    /**
+     * @param song for the song
+     * @return the index of a given song
+     */
     public Integer getIndexOfTrack(final Song song) {
         return songs.indexOf(song);
     }
-    public void addSongAtIndex(Integer index, Song song) {
+
+    /**
+     * Adds a song at a given index
+     * @param index for the index
+     * @param song for the song to be added
+     */
+    public void addSongAtIndex(final Integer index, final Song song) {
         songs.add(index + 1, song);
     }
 }

@@ -1,9 +1,5 @@
 package app.user;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Array;
-import java.util.*;
 
 import app.Admin;
 import app.audio.Collections.Album;
@@ -17,6 +13,13 @@ import app.user.Collections.Merch;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Comparator;
+
 
 public class Artist extends User {
     @Getter
@@ -51,6 +54,10 @@ public class Artist extends User {
     @Setter
     @Getter
     private ArrayList<Song> freeProfitableSongs;
+    private static final int REVENUE = 1000000;
+    private static final int TOP_FANS = 5;
+
+
 
     public Artist(final String username, final int age, final String city) {
         super(username, age, city);
@@ -202,26 +209,58 @@ public class Artist extends User {
     public void setLikes(final Integer likes) {
         this.likes = likes;
     }
-    public void updateSongRevenue(Integer totalSongs, Integer artistSongs) {
-        this.songRevenue = this.songRevenue + (double) (1000000 * artistSongs) / totalSongs;
+
+    /**
+     * @param totalSongs for the total songs listened to
+     * @param artistSongs for the artist's songs listened to
+     */
+    public void updateSongRevenue(final Integer totalSongs, final Integer artistSongs) {
+        this.songRevenue = this.songRevenue + (double) (REVENUE * artistSongs) / totalSongs;
     }
+
+    /**
+     * Adds a profitable song to the list
+     * @param song for the song
+     */
     public void addProfitableSong(final Song song) {
         this.profitableSongs.add(song);
     }
-    public void setMostProfitableSong(Song song) {
+
+    /**
+     * Sets the most profitable song
+     * @param song for the song
+     */
+    public void setMostProfitableSong(final Song song) {
         if (!profitableSongs.isEmpty()) {
             this.mostProfitableSong = song.getName();
         } else {
             this.mostProfitableSong = "N/A";
         }
     }
-    public void updateSongRevenueFree(Integer totalSongs, Integer artistSongs, Integer price) {
+
+    /**
+     * Updates the revenue with the money got form advertisements
+     * @param totalSongs for the total songs listened to
+     * @param artistSongs for the songs listened to from the artist
+     * @param price for the price of an ad
+     */
+    public void updateSongRevenueFree(final Integer totalSongs,
+                                      final Integer artistSongs, final Integer price) {
         this.songRevenue = this.songRevenue + (double) (price * artistSongs) / totalSongs;
     }
-    public void updateMerchRevenue(Merch merch) {
+
+    /**
+     * Updates the revenue got from merch
+     * @param merch for the merch
+     */
+    public void updateMerchRevenue(final Merch merch) {
         this.merchRevenue += merch.getPrice();
         this.boughtMerch = true;
     }
+
+    /**
+     * @return the top 5 fans
+     */
     public ArrayList<User> getTop5Fans() {
         ArrayList<User> top5Fans = new ArrayList<>();
         Admin admin = Admin.getInstance();
@@ -235,11 +274,16 @@ public class Artist extends User {
 
         listeningsMap.entrySet().stream()
                 .sorted(Map.Entry.<User, Integer>comparingByValue().reversed())
-                .limit(5)
+                .limit(TOP_FANS)
                 .forEach(entry -> top5Fans.add(entry.getKey()));
 
         return top5Fans;
     }
+
+    /**
+     * Creates the fans playlist
+     * @return the playlist
+     */
     public Playlist fansPlaylist() {
         ArrayList<User> top5Fans = this.getTop5Fans();
         Playlist fansPlaylist = new Playlist(this.getUsername() + " Fan Club recommendations",
@@ -254,7 +298,7 @@ public class Artist extends User {
                     likedSongs.remove(song);
                 }
             }
-            List<Song> top5FanSongs = likedSongs.subList(0, Math.min(5, likedSongs.size()));
+            List<Song> top5FanSongs = likedSongs.subList(0, Math.min(TOP_FANS, likedSongs.size()));
             for (Song song : top5FanSongs) {
                 fansPlaylist.addSong(song);
             }

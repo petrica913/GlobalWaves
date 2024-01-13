@@ -8,7 +8,7 @@ public abstract class AudioFile extends LibraryEntry {
     private final Integer duration;
     private final String type;
 
-    public AudioFile(final String name, final Integer duration, String type) {
+    public AudioFile(final String name, final Integer duration, final String type) {
         super(name);
         this.duration = duration;
         this.type = type;

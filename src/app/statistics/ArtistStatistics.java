@@ -5,7 +5,6 @@ import app.user.Artist;
 import app.user.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -17,11 +16,15 @@ import java.util.stream.Collectors;
 
 public class ArtistStatistics implements Statistics {
     private final Artist artist;
+    private static final int TOP_LIMIT = 5;
 
     public ArtistStatistics(final Artist artist) {
         this.artist = artist;
     }
 
+    /**
+     * @return the stats for the artist
+     */
     @Override
     public JsonNode generateStatistics() {
         Admin admin = Admin.getInstance();
@@ -69,7 +72,7 @@ public class ArtistStatistics implements Statistics {
                 .entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed()
                         .thenComparing(Map.Entry.comparingByKey()))
-                .limit(5)
+                .limit(TOP_LIMIT)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
@@ -90,14 +93,18 @@ public class ArtistStatistics implements Statistics {
         return resultNode;
     }
 
-    private JsonNode createTopNode(Map<String, Integer> data) {
+    /**
+     * @param data for the given data
+     * @return the top 5 from the given list
+     */
+    private JsonNode createTopNode(final Map<String, Integer> data) {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode node = objectMapper.createObjectNode();
 
         data.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed()
                         .thenComparing(Map.Entry.comparingByKey()))
-                .limit(5)
+                .limit(TOP_LIMIT)
                 .forEach(entry -> node.put(entry.getKey(), entry.getValue()));
 
         return node;

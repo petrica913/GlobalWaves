@@ -17,11 +17,15 @@ import java.util.LinkedHashMap;
 
 public class UserStatistics implements Statistics {
     private final User user;
+    private static final int TOP_LIMIT = 5;
 
-    public UserStatistics(User user) {
+    public UserStatistics(final User user) {
         this.user = user;
     }
 
+    /**
+     * @return the stats for the given user
+     */
     @Override
     public JsonNode generateStatistics() {
         Admin admin = Admin.getInstance();
@@ -60,23 +64,33 @@ public class UserStatistics implements Statistics {
         ObjectNode jsonNode = JsonNodeFactory.instance.objectNode();
 
         ObjectNode resultNode = objectMapper.createObjectNode();
-        resultNode.set("topArtists", objectMapper.valueToTree(getTopNEntries(artistListens, 5)));
-        resultNode.set("topGenres", objectMapper.valueToTree(getTopNEntries(genreListens, 5)));
-        resultNode.set("topSongs", objectMapper.valueToTree(getTopNEntries(songListens, 5)));
-        resultNode.set("topAlbums", objectMapper.valueToTree(getTopNEntries(albumListens, 5)));
-        resultNode.set("topEpisodes", objectMapper.valueToTree(getTopNEntries(episodeListens, 5)));
+        resultNode.set("topArtists",
+                objectMapper.valueToTree(getTopNEntries(artistListens)));
+        resultNode.set("topGenres",
+                objectMapper.valueToTree(getTopNEntries(genreListens)));
+        resultNode.set("topSongs",
+                objectMapper.valueToTree(getTopNEntries(songListens)));
+        resultNode.set("topAlbums",
+                objectMapper.valueToTree(getTopNEntries(albumListens)));
+        resultNode.set("topEpisodes",
+                objectMapper.valueToTree(getTopNEntries(episodeListens)));
         if (topSongs.isEmpty() && topEpisodes.isEmpty()) {
             resultNode = null;
         }
         return resultNode;
     }
 
-    private static Map<String, Integer> getTopNEntries(Map<String, Integer> inputMap, int n) {
+    /**
+     * @param inputMap for the list
+     * @return a list with top 5 from the given data list
+     */
+    private static Map<String, Integer> getTopNEntries(final Map<String,
+            Integer> inputMap) {
         return inputMap.entrySet()
                 .stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed()
                         .thenComparing(Map.Entry.comparingByKey()))
-                .limit(n)
+                .limit(UserStatistics.TOP_LIMIT)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }

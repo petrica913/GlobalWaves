@@ -2,8 +2,9 @@ package app.statistics;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.Map;
-
 public interface Statistics {
+    /**
+     *  It is used for generating the stats
+     */
     JsonNode generateStatistics();
 }

@@ -52,7 +52,13 @@ public final class Admin {
     @Setter
     @Getter
     private Integer artistsCount = 0;
+    private static final int DIGITS = 100;
 
+
+    /**
+     * @return an instance of the admin;
+     * used for singleton
+     */
     public static Admin getInstance() {
         if (instance == null) {
             instance = new Admin();
@@ -270,7 +276,8 @@ public final class Admin {
             if (user.getType() == null) {
                 user.setType("user");
             }
-            if (user.isOnline() && !(user.getType().equals("artist")) && !(user.getType().equals("host"))) {
+            if (user.isOnline() && !(user.getType().
+                    equals("artist")) && !(user.getType().equals("host"))) {
                 onlineUsers.add(user.getUsername());
             }
         }
@@ -561,6 +568,11 @@ public final class Admin {
         albums = new ArrayList<>();
         timestamp = 0;
     }
+
+    /**
+     * @param commandInput for the given command
+     * @return the result of the wrapped command
+     */
     public JsonNode wrapped(final CommandInput commandInput) {
         String username = commandInput.getUsername();
         User user = getUser(username);
@@ -584,6 +596,10 @@ public final class Admin {
         result = userStats.generateStatistics();
         return result;
     }
+
+    /**
+     * @return the result of ending the program
+     */
     public JsonNode endProgram() {
         List<Song> toCheck = songs;
         for (User user : users) {
@@ -630,8 +646,10 @@ public final class Admin {
         }
         artistsList.sort(Comparator
                 .comparing(Artist::getSongRevenue, Comparator.reverseOrder())
-                .thenComparing(Comparator.comparing(Artist::getMerchRevenue, Comparator.reverseOrder()))
-                .thenComparing(Comparator.comparing(Artist::getUsername, Comparator.naturalOrder()))
+                .thenComparing(Comparator.comparing(Artist::getMerchRevenue,
+                        Comparator.reverseOrder()))
+                .thenComparing(Comparator.comparing(Artist::getUsername,
+                        Comparator.naturalOrder()))
         );
 
         int count = 1;
@@ -641,9 +659,9 @@ public final class Admin {
                 continue;
             }
             double val = artist.getSongRevenue();
-            val = val * 100;
+            val = val * DIGITS;
             val = Math.round(val);
-            val = val / 100;
+            val = val / DIGITS;
             artist.setRanking(count);
             ObjectNode artistStats = objectMapper.createObjectNode();
             artistStats.put("merchRevenue", artist.getMerchRevenue());

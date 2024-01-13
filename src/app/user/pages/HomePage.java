@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import app.audio.Files.Song;
 import app.audio.LibraryEntry;
 import app.user.User;
 import app.audio.Collections.Playlist;
@@ -70,15 +69,26 @@ public class HomePage implements Page {
 
         return followedPlaylists.toString();
     }
+
+    /**
+     * @return the recommended songs
+     */
     private String displayRecommendedSongs() {
         return "[" + user.getRecommendedSong().getName() + "]";
     }
+
+    /**
+     * @return the recommended playlists
+     */
     private String displayRecommendedPlaylist() {
         return "[" + user.getRecommendedPlaylist().getName() + "]";
     }
 
+    /**
+     * @param visitor for the visitor
+     */
     @Override
-    public void accept(PageVisitor visitor) {
+    public void accept(final PageVisitor visitor) {
         visitor.visit(this);
     }
 }

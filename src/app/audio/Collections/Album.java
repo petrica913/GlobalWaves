@@ -66,22 +66,40 @@ public class Album extends AudioCollection {
         }
         return followers;
     }
+
+    /**
+     * @param song for the song
+     * @return Returns the index of a given song
+     */
     public Integer getIndexOfTrack(final Song song) {
         return songs.indexOf(song);
     }
-    public void addSongAtIndex(Integer index, Song song) {
+
+    /**
+     * Adds a song on the album at the given index
+     * @param index for the given index
+     * @param song for the song that will be added
+     */
+    public void addSongAtIndex(final Integer index, final Song song) {
         if (index >= 0 && index <= songs.size()) {
             songs.add(index, song);
         } else {
             songs.add(song);
         }
     }
+
+    /**
+     * @param song for the song
+     * @return true/false if the album contains the given song
+     */
     public boolean containsSong(final Song song) {
         return songs.contains(song);
     }
-    public void removeSong (final Song song) {
-        songs.remove(song);
-    }
+
+    /**
+     * Removes a song from the album from a given index
+     * @param index for the index
+     */
     public void removeSong(final int index) {
         songs.remove(index);
     }

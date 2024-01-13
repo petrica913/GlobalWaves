@@ -140,10 +140,13 @@ public final class Song extends AudioFile {
     public void dislike() {
         likes--;
     }
-    public void updateRevenue(double newRevenue) {
+
+    /**
+     * It is used for updating the revenue collected by the song
+     * @param newRevenue for the value that will
+     *                   be added to the existing revenue
+     */
+    public void updateRevenue(final double newRevenue) {
         this.revenue += newRevenue;
-    }
-    public void resetRevenue() {
-        this.revenue = 0;
     }
 }

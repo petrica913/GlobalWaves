@@ -14,12 +14,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class HostStatistics implements Statistics{
+public class HostStatistics implements Statistics {
     private final Host host;
-    public HostStatistics(Host host) {
+    private static final int TOP_EPISODES_LIMIT = 5;
+
+    public HostStatistics(final Host host) {
         this.host = host;
     }
 
+    /**
+     * @return the stats for the host
+     */
     @Override
     public JsonNode generateStatistics() {
         Admin admin = Admin.getInstance();
@@ -54,14 +59,19 @@ public class HostStatistics implements Statistics{
 
         return resultNode;
     }
-    private JsonNode createTopNode(Map<String, Integer> data) {
+
+    /**
+     * @param data for the total episodes of the host
+     * @return the top 5 episodes
+     */
+    private JsonNode createTopNode(final Map<String, Integer> data) {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode node = objectMapper.createObjectNode();
 
         data.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed()
                         .thenComparing(Map.Entry.comparingByKey()))
-                .limit(5)
+                .limit(TOP_EPISODES_LIMIT)
                 .forEach(entry -> node.put(entry.getKey(), entry.getValue()));
 
         return node;

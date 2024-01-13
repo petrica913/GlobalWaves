@@ -9,7 +9,7 @@ public abstract class AudioCollection extends LibraryEntry {
     private final String owner;
     private final String type;
 
-    public AudioCollection(final String name, final String owner, String type) {
+    public AudioCollection(final String name, final String owner, final String type) {
         super(name);
         this.owner = owner;
         this.type = type;

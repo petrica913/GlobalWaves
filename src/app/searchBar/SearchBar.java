@@ -5,8 +5,6 @@ import app.Admin;
 import app.audio.Collections.Album;
 import app.audio.LibraryEntry;
 import app.audio.UserEntry;
-import app.user.Artist;
-import app.user.Host;
 import app.user.User;
 import lombok.Getter;
 
@@ -137,8 +135,9 @@ public class SearchBar {
                 entries = new ArrayList<>();
                 UserEntry newInstance;
                 for (User user1 : Admin.getInstance().getUsers()) {
-                    if (user1.getType() == null)
+                    if (user1.getType() == null) {
                         user1.setType("user");
+                    }
                     if (user1.getType().equals("artist")) {
                         newInstance = new UserEntry(user1.getUsername());
                         entries.add(newInstance);

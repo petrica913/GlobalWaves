@@ -69,8 +69,11 @@ public class ArtistPage implements Page {
         return formattedEvents.toString();
     }
 
+    /**
+     * @param visitor for the visitor
+     */
     @Override
-    public void accept(PageVisitor visitor) {
+    public void accept(final PageVisitor visitor) {
         visitor.visit(this);
     }
 }

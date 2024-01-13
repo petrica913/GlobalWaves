@@ -9,15 +9,12 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import fileio.input.CommandInput;
 import fileio.input.LibraryInput;
-import org.checkerframework.checker.units.qual.C;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * The entry point to this homework. It runs the checker that tests your implentation.
@@ -139,13 +136,14 @@ public final class Main {
                 case "cancelPremium" -> outputs.add(CommandRunner.cancelPremium(command));
                 case "adBreak" -> outputs.add(CommandRunner.adBreak(command, library));
                 case "subscribe" -> outputs.add(CommandRunner.subscribe(command));
-                case "getNotifications" ->outputs.add(CommandRunner.getNotifications(command));
+                case "getNotifications" -> outputs.add(CommandRunner.getNotifications(command));
                 case "buyMerch" -> outputs.add(CommandRunner.buyMerch(command));
                 case "seeMerch" -> outputs.add(CommandRunner.seeMerch(command));
                 case "updateRecommendations" -> outputs.add(CommandRunner.updateRecom(command));
                 case "previousPage" -> outputs.add(CommandRunner.previousPage(command));
                 case "nextPage" -> outputs.add(CommandRunner.nextPage(command));
-                case "loadRecommendations" ->outputs.add(CommandRunner.loadRecommendation(command));
+                case "loadRecommendations" ->
+                        outputs.add(CommandRunner.loadRecommendation(command));
                 default -> System.out.println("Invalid command " + commandName);
             }
         }
