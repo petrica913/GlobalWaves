@@ -585,12 +585,34 @@ public final class Admin {
         return result;
     }
     public JsonNode endProgram() {
+        List<Song> toCheck = songs;
         for (User user : users) {
             if (user.getType() == null) {
                 user.setType("user");
             }
             if (user.getType().equals("user")) {
                 user.cancelPremium();
+            }
+            if (user.getType().equals("artist")) {
+                Artist artist1 = (Artist) user;
+                ArrayList<Song> sorted = artist1.getProfitableSongs();
+                sorted.addAll(artist1.getFreeProfitableSongs());
+                sorted.sort(
+                        Comparator.comparingDouble(Song::getRevenue)
+                                .reversed()
+                                .thenComparing(Song::getName)
+                );
+                if (sorted.size() == 0) {
+                    continue;
+                }
+                Song mostProfitable = sorted.get(0);
+                double mostPorfitableValue = mostProfitable.getRevenue();
+                for (Song song : artist1.getProfitableSongs()) {
+                    if (song.getRevenue() == mostPorfitableValue) {
+                        artist1.setMostProfitableSong(song);
+                        break;
+                    }
+                }
             }
         }
         ObjectMapper objectMapper = new ObjectMapper();
@@ -635,5 +657,4 @@ public final class Admin {
 
         return result;
     }
-
 }

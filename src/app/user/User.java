@@ -225,6 +225,7 @@ public class User {
                 premiumSongs.add((Song) player.getSource().getAudioFile());
             }
             if (this.getCredits() == 0) {
+                String username1 = this.getUsername();
                 this.addSongToAd((Song) player.getSource().getAudioFile());
             }
         }
@@ -681,6 +682,9 @@ public class User {
             default:
                 return username + " is trying to access a non-existent page.";
         }
+        if (historyIndex >= 0) {
+            history.subList(historyIndex + 1, history.size()).clear();
+        }
         history.add(nextPage);
         historyIndex++;
         String type = nextPage.type();
@@ -1004,25 +1008,12 @@ public class User {
                     }
                 }
             }
-            ArrayList<Song> sorted = artist1.getProfitableSongs();
-            sorted.sort(
-                    Comparator.comparingDouble(Song::getRevenue)
-                            .reversed()
-                            .thenComparing(Song::getName)
-            );
-            Song mostProfitable = sorted.get(0);
-            double mostPorfitableValue = mostProfitable.getRevenue();
-            for (Song song : artist1.getProfitableSongs()) {
-                if (song.getRevenue() == mostPorfitableValue) {
-                    artist1.setMostProfitableSong(song);
-                    break;
-                }
-            }
+
         }
         this.credits = 0;
         this.premiumSongs.clear();
     }
-    public void adBreak(Integer timestamp, Song ad) {
+    public void adBreak(Integer timestamp, Song ad, Integer price) {
         if (this.player.getSource().getAudioCollection() == null
                 && this.player.getSource().getAudioFile().getType().equals("song")) {
             Playlist playlist = new Playlist("adPlaylist", this.username);
@@ -1031,9 +1022,11 @@ public class User {
             Integer remainedTime = player.getSource().getRemainedDuration();
             PlayerSource source = this.player.getSource();
             source.setAudioCollection(playlist);
+            source.setType(Enums.PlayerSourceType.PLAYLIST);
             this.player.setSource(source);
             this.player.sourceTime(remainedTime);
             this.advertisement.setAd(ad);
+            this.advertisement.setPrice(price);
             return;
         }
         if (this.player.getSource().getAudioCollection().getType().equals("playlist")) {
@@ -1047,6 +1040,7 @@ public class User {
             source.setAudioCollection(playlist);
             this.player.setSource(source);
             this.advertisement.setAd(ad);
+            this.advertisement.setPrice(price);
             return;
         }
         if (this.player.getSource().getAudioCollection().getType().equals("album")) {
@@ -1060,6 +1054,7 @@ public class User {
             source.setAudioCollection(album);
             this.player.setSource(source);
             this.advertisement.setAd(ad);
+            this.advertisement.setPrice(price);
         }
 
     }
@@ -1068,6 +1063,10 @@ public class User {
         songs.add(song);
         advertisement.setSongsBetween(songs);
     }
+    @Getter
+    private Integer total = 0;
+    @Getter
+    private Integer aListen = 0;
     public void distributeMoney (ArrayList<Song> songs) {
         Map<String, Integer> artistListens = new HashMap<>();
         Map<String, Integer> songListens = new HashMap<>();
@@ -1082,7 +1081,10 @@ public class User {
             String artist = entry.getKey();
             Integer listens = entry.getValue();
             Artist artist1 = (Artist) Admin.getUser(artist);
-            artist1.updateSongRevenueFree(totalListens, listens);
+            total = totalListens;
+            aListen = listens;
+            artist1.updateSongRevenueFree(totalListens, listens,
+                    this.getAdvertisement().getPrice());
         }
     }
     public void subscribe(User user) {
@@ -1141,12 +1143,7 @@ public class User {
                 int randomIndex = random.nextInt(songs.size());
                 this.recommendedSong = songs.get(randomIndex);
                 lastRecomType = "song";
-                lastRecommended = new LibraryEntry(recommendedSong.getName()) {
-                    @Override
-                    public String getName() {
-                        return super.getName();
-                    }
-                };
+                lastRecommended = recommendedSong;
                 message = "The recommendations for user " + username
                         + " have been updated successfully.";
             }
@@ -1154,12 +1151,7 @@ public class User {
             Playlist playlist = this.createRandomPlaylist();
             this.recommendedPlaylist = playlist;
             lastRecomType = "playlist";
-            lastRecommended = new LibraryEntry(recommendedPlaylist.getName()) {
-                @Override
-                public String getName() {
-                    return super.getName();
-                }
-            };
+            lastRecommended = recommendedPlaylist;
             message = "The recommendations for user " + username
                     + " have been updated successfully.";
         } else if (type.equals("fans_playlist")) {
@@ -1167,20 +1159,11 @@ public class User {
             Artist artist = (Artist) Admin.getInstance().getUser(artistName);
             this.recommendedPlaylist = artist.fansPlaylist();
             lastRecomType = "playlist";
-            lastRecommended = new LibraryEntry(recommendedPlaylist.getName()) {
-                @Override
-                public String getName() {
-                    return super.getName();
-                }
-            };
+            lastRecommended = recommendedPlaylist;
             message = "The recommendations for user " + username
                     + " have been updated successfully.";
         }
         return message;
-    }
-    public void resetRecom() {
-        this.recommendedSong = new Song();
-        this.recommendedPlaylist = new Playlist("", "");
     }
     public Playlist createRandomPlaylist() {
         ArrayList<Song> listOfSongs = new ArrayList<>();
@@ -1280,14 +1263,14 @@ public class User {
     }
     public String nextPage() {
         String message = new String();
-        if (historyIndex > history.size()) {
+        historyIndex++;
+        if (historyIndex >= history.size()) {
             message = "There are no pages left to go forward.";
             return message;
         }
-        historyIndex++;
         nextPage = history.get(historyIndex);
         message = "The user " + this.username
-                + " has navigated successfully to the previous page.";
+                + " has navigated successfully to the next page.";
         return message;
     }
     public String loadRecommendations() {

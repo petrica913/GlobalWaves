@@ -194,11 +194,17 @@ public class Player {
     public void simulatePlayer(int time) {
         if (!paused) {
             while (time >= source.getDuration()) {
-
+                boolean adPlayed = false;
+                boolean currentAd = false;
+                if (source.getAudioFile().getName().equals("Ad Break")) {
+                    currentAd = true;
+                }
                 time -= source.getDuration();
                 next();
                 if (source != null){
-                    if (source.getAudioFile().getType().equals("song") && source.getAudioCollection() != null) {
+                    if (source.getAudioFile().getType().equals("song") &&
+                            source.getAudioCollection() != null &&
+                            !this.getSource().getAudioFile().getName().equals("Ad Break")) {
                         Song song = (Song) this.getSource().getAudioFile();
                         Artist artist1 = (Artist) Admin.getInstance().getUser(song.getArtist());
                         if (artist1 != null) {
@@ -223,6 +229,7 @@ public class Player {
                             owner.setPremiumSongs(premiumSongs);
                         }
                         if (owner.getType().equals("user") && owner.getCredits() == 0) {
+                            String ownerName = owner.getUsername();
                             owner.addSongToAd((Song) this.getCurrentAudioFile());
                         }
                         // aici vezi daca indexu din audiocollection al sourcei e mai mare decat ad-u
@@ -239,6 +246,8 @@ public class Player {
                             if (currentIndex > adIndex && owner.getAdvertisement().isBeenPlayed()) {
                                 playlist.removeSong(adIndex);
                                 owner.distributeMoney(owner.getAdvertisement().getSongsBetween());
+                                setArtistsProfitable(owner.getAdvertisement().getSongsBetween(),
+                                        owner.getTotal(), owner.getAListen());
                                 owner.setAdvertisement(new Advertisement());
                             }
                         }
@@ -250,7 +259,8 @@ public class Player {
                             if (currentIndex > adIndex && owner.getAdvertisement().isBeenPlayed()) {
                                 album.removeSong(adIndex);
                                 owner.distributeMoney(owner.getAdvertisement().getSongsBetween());
-                                owner.setAdvertisement(new Advertisement());
+                                setArtistsProfitable(owner.getAdvertisement().getSongsBetween(),
+                                        owner.getTotal(), owner.getAListen());                                owner.setAdvertisement(new Advertisement());
                             }
                         }
                     }
@@ -260,6 +270,12 @@ public class Player {
 
                 }
                 if (paused) {
+                    if (source == null && currentAd == true) {
+                        owner.distributeMoney(owner.getAdvertisement().getSongsBetween());
+                        setArtistsProfitable(owner.getAdvertisement().getSongsBetween(),
+                                owner.getTotal(), owner.getAListen());
+                        owner.setAdvertisement(new Advertisement());
+                    }
                     break;
                 }
             }
@@ -361,5 +377,16 @@ public class Player {
     }
     public void sourceTime(Integer time) {
         source.setRemainedDuration(time);
+    }
+    public void setArtistsProfitable(ArrayList<Song> songs,
+                                     Integer totalListens, Integer listens) {
+        for (Song song : songs) {
+            Artist artist = (Artist) Admin.getInstance().getUser(song.getArtist());
+            ArrayList<Song> artistSongs = artist.getFreeProfitableSongs();
+            artistSongs.add(song);
+            artist.setFreeProfitableSongs(artistSongs);
+            double revenue = (double) owner.getAdvertisement().getPrice() / totalListens * listens;
+            song.updateRevenue(revenue);
+        }
     }
 }

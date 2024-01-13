@@ -48,6 +48,9 @@ public class Artist extends User {
     @Setter
     @Getter
     private ArrayList<Song> profitableSongs;
+    @Setter
+    @Getter
+    private ArrayList<Song> freeProfitableSongs;
 
     public Artist(final String username, final int age, final String city) {
         super(username, age, city);
@@ -60,6 +63,7 @@ public class Artist extends User {
         ranking = 1;
         mostProfitableSong = "N/A";
         profitableSongs = new ArrayList<>();
+        freeProfitableSongs = new ArrayList<>();
     }
 
     /**
@@ -211,8 +215,8 @@ public class Artist extends User {
             this.mostProfitableSong = "N/A";
         }
     }
-    public void updateSongRevenueFree(Integer totalSongs, Integer artistSongs) {
-        this.songRevenue = this.songRevenue + (double) (500 * artistSongs) / totalSongs;
+    public void updateSongRevenueFree(Integer totalSongs, Integer artistSongs, Integer price) {
+        this.songRevenue = this.songRevenue + (double) (price * artistSongs) / totalSongs;
     }
     public void updateMerchRevenue(Merch merch) {
         this.merchRevenue += merch.getPrice();

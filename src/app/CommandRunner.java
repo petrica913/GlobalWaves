@@ -872,7 +872,7 @@ public final class CommandRunner {
                 message = user.getUsername() + " is not playing any music.";
             } else {
                 message = "Ad inserted successfully.";
-                user.adBreak(command.getTimestamp(), ad);
+                user.adBreak(command.getTimestamp(), ad, command.getPrice());
             }
         }
         objectNode.put("message", message);

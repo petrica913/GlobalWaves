@@ -20,9 +20,13 @@ public class Advertisement {
     @Getter
     @Setter
     private boolean beenPlayed;
+    @Setter
+    @Getter
+    Integer price;
     public Advertisement() {
         this.songsBetween = new ArrayList<>();
         this.beenPlayed = false;
         this.ad = new Song();
+        this.price = 0;
     }
 }
