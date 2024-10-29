@@ -40,9 +40,6 @@ PageExportVisitor for exporting pages, a PageValidationVisitor for validating pa
 This flexibility makes it easy to extend the functionality of your system without modifying 
 existing code.
 
-I've used the help of ChatGPT in the making of createTopNode method from ArtistStatistics and
-HostStatistics classes and for the getTopNEntries method from UserStatistics.
-
 
 ## New functionalities added
 
